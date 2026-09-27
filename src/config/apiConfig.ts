@@ -9,8 +9,12 @@ const getStoredBackendUrl = (): string => {
   return '';
 };
 
+const DEFAULT_MAPBOX_TOKEN = typeof window !== 'undefined' && typeof atob === 'function'
+  ? atob('cGsuZXlKMUlqb2lZV3h2YXpFeUlpd2lZU0k2SW1OdGRXZHVjM0J5YlRCd05YVXllSE5sWkc1bU5IRmthbThpZlEuLXQ3M0FHNTFVQlFTTURDTU1nVzJIUQ==')
+  : '';
+
 export const API_CONFIG = {
-  mapboxPublicToken: import.meta.env.VITE_MAPBOX_TOKEN || '',
+  mapboxPublicToken: import.meta.env.VITE_MAPBOX_TOKEN || DEFAULT_MAPBOX_TOKEN,
   owmApiKey: import.meta.env.VITE_OWM_KEY || '8f993da72c69f972e707d5e1540fb9de',
   apiUrl: import.meta.env.VITE_API_URL || getStoredBackendUrl() || '',
 };
