@@ -1205,38 +1205,38 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
   }, [activeLayers]);
 
   return (
-    <div className={`relative flex flex-col h-full w-full min-h-[500px] ${isFullscreen ? 'fixed inset-0 z-50 bg-[#070b16] p-0' : 'overflow-hidden border border-[#1a2540]'}`}>
+    <div className={`relative flex flex-col h-full w-full min-h-[450px] sm:min-h-[500px] ${isFullscreen ? 'fixed inset-0 z-50 bg-[#070b16] p-0' : 'overflow-hidden border border-[#1a2540]'}`}>
       {/* Map Header Bar */}
-      <div className="bg-[#0a0f1e]/95 backdrop-blur-xl border-b border-[#1a2540] px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 z-20">
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <div className="h-3 w-3 rounded-full bg-cyan-400"></div>
-            <div className="absolute inset-0 h-3 w-3 rounded-full bg-cyan-400 animate-ping opacity-75"></div>
+      <div className="bg-[#0a0f1e]/95 backdrop-blur-xl border-b border-[#1a2540] px-2.5 sm:px-4 py-2 flex flex-wrap items-center justify-between gap-2 z-20">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="relative shrink-0">
+            <div className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-cyan-400"></div>
+            <div className="absolute inset-0 h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-cyan-400 animate-ping opacity-75"></div>
           </div>
-          <div>
-            <h2 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-              StormTrace 3D Pan-India GIS Rainfall Engine
-              <span className="text-[10px] px-2 py-0.5 rounded-md bg-gradient-to-r from-cyan-950 to-blue-950 text-cyan-300 border border-cyan-800/50 font-mono">
+          <div className="min-w-0">
+            <h2 className="text-xs sm:text-sm font-bold text-slate-100 flex items-center gap-1.5 truncate">
+              <span className="truncate">StormTrace 3D GIS Engine</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800/50 font-mono shrink-0">
                 Live Doppler Radar
               </span>
-              <span className="text-[10px] px-2 py-0.5 rounded-md bg-violet-950/60 text-violet-300 border border-violet-800/40 font-mono">
-                DDPM 5km Sub-Grid
+              <span className="hidden md:inline text-[9px] px-1.5 py-0.5 rounded bg-violet-950/60 text-violet-300 border border-violet-800/40 font-mono shrink-0">
+                DDPM 5km
               </span>
             </h2>
-            <p className="text-[11px] text-slate-400">
+            <p className="hidden sm:block text-[10px] sm:text-[11px] text-slate-400 truncate">
               Spherical GNN Anomaly Tracker • 5km Diffusion Downscaled Extreme Value Radar
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 max-w-full">
           {/* Region Selector */}
-          <div className="flex items-center gap-1.5 bg-[#111827] border border-[#1e2d48] px-2.5 py-1.5 rounded-lg text-xs text-slate-200">
-            <Globe className="h-3.5 w-3.5 text-cyan-400" />
+          <div className="flex items-center gap-1 bg-[#111827] border border-[#1e2d48] px-2 py-1 rounded-lg text-xs text-slate-200 shrink-0">
+            <Globe className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
             <select
               value={currentRegion}
               onChange={(e) => setCurrentRegion(e.target.value as IndiaRegionId)}
-              className="bg-transparent text-xs text-slate-200 font-bold focus:outline-none cursor-pointer"
+              className="bg-transparent text-[11px] text-slate-200 font-bold focus:outline-none cursor-pointer max-w-[80px] sm:max-w-none"
             >
               {INDIA_REGION_PRESETS.map(p => (
                 <option key={p.id} value={p.id} className="bg-[#111827]">{p.name}</option>
@@ -1247,38 +1247,37 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
           {/* Style Toggle */}
           <button
             onClick={toggleMapStyle}
-            className="px-2.5 py-1.5 rounded-lg bg-[#111827] hover:bg-[#1e2d48] border border-[#1e2d48] text-xs font-semibold text-slate-300 flex items-center gap-1.5 transition-all"
+            className="px-2 py-1 rounded-lg bg-[#111827] hover:bg-[#1e2d48] border border-[#1e2d48] text-[11px] font-semibold text-slate-300 flex items-center gap-1 transition-all shrink-0"
             title="Switch Map Base Style"
           >
-            <Globe className="h-3.5 w-3.5 text-cyan-400" />
-            <span className="capitalize font-mono">{mapStyle}</span>
+            <Globe className="h-3 w-3 text-cyan-400 shrink-0" />
+            <span className="capitalize font-mono text-[10px]">{mapStyle}</span>
           </button>
 
           {/* 3D Toggle */}
           <button
             onClick={toggle3D}
-
-            className={`p-1.5 rounded-lg border transition-all ${
+            className={`p-1 sm:p-1.5 rounded-lg border transition-all shrink-0 ${
               is3DEnabled 
                 ? 'bg-cyan-600/20 border-cyan-500/40 text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.2)]' 
                 : 'bg-[#111827] border-[#1e2d48] text-slate-400 hover:text-slate-200'
             }`}
             title={is3DEnabled ? 'Disable 3D View' : 'Enable 3D View'}
           >
-            <Mountain className="h-4 w-4" />
+            <Mountain className="h-3.5 w-3.5" />
           </button>
 
           {/* Reset View */}
           <button
             onClick={resetView}
-            className="p-1.5 rounded-lg bg-[#111827] hover:bg-[#1e2d48] border border-[#1e2d48] text-slate-400 hover:text-slate-200 transition-all"
+            className="p-1 sm:p-1.5 rounded-lg bg-[#111827] hover:bg-[#1e2d48] border border-[#1e2d48] text-slate-400 hover:text-slate-200 transition-all shrink-0"
             title="Reset to Pan-India View"
           >
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="h-3.5 w-3.5" />
           </button>
 
           {/* Opacity Slider */}
-          <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400 bg-[#111827] border border-[#1e2d48] px-2.5 py-1.5 rounded-lg">
+          <div className="hidden md:flex items-center gap-2 text-xs text-slate-400 bg-[#111827] border border-[#1e2d48] px-2 py-1 rounded-lg shrink-0">
             <Sliders className="h-3.5 w-3.5 text-cyan-400" />
             <input
               type="range"
@@ -1295,43 +1294,53 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
           {/* Fullscreen */}
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="p-1.5 rounded-lg bg-[#111827] hover:bg-[#1e2d48] border border-[#1e2d48] text-slate-300 transition-all"
+            className="p-1 sm:p-1.5 rounded-lg bg-[#111827] hover:bg-[#1e2d48] border border-[#1e2d48] text-slate-300 transition-all shrink-0"
             title="Toggle Fullscreen"
           >
-            {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+            {isFullscreen ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
           </button>
         </div>
       </div>
 
       {/* Main Map Canvas */}
-      <div className="relative flex-1 w-full h-full min-h-[500px] bg-[#060a14] overflow-hidden">
+      <div className="relative flex-1 w-full h-full min-h-[350px] sm:min-h-[500px] bg-[#060a14] overflow-hidden">
         <div ref={mapContainerRef} className="absolute inset-0 z-0 w-full h-full" />
 
         {/* Left Layer Panel Toggle (Left Eye Button) */}
         <button
-          onClick={() => setShowLayerPanel(!showLayerPanel)}
-          className="absolute top-4 left-4 z-10 p-1.5 rounded-lg bg-[#0a0f1e]/90 backdrop-blur-lg border border-[#1e2d48] text-slate-300 hover:text-white transition-all shadow-lg flex items-center gap-1.5 text-xs font-semibold"
+          onClick={() => {
+            setShowLayerPanel(!showLayerPanel);
+            if (!showLayerPanel && window.innerWidth < 640) {
+              setShowCellPanel(false); // Auto close cell panel on phone screens to prevent overlapping
+            }
+          }}
+          className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 p-1.5 rounded-lg bg-[#0a0f1e]/90 backdrop-blur-lg border border-[#1e2d48] text-slate-300 hover:text-white transition-all shadow-lg flex items-center gap-1.5 text-xs font-semibold"
           title={showLayerPanel ? 'Hide Left Layer Panel' : 'Show Left Layer Panel'}
         >
           {showLayerPanel ? <EyeOff className="h-3.5 w-3.5 text-cyan-400" /> : <Eye className="h-3.5 w-3.5 text-cyan-400" />}
-          <span className="hidden sm:inline text-[10px] text-slate-300">Layers</span>
+          <span className="text-[10px] text-slate-300">Layers</span>
         </button>
 
         {/* Right Cell Panel Toggle (Right Eye Button) */}
         {selectedCell && (
           <button
-            onClick={() => setShowCellPanel(!showCellPanel)}
-            className="absolute top-4 right-4 z-10 p-1.5 rounded-lg bg-[#0a0f1e]/90 backdrop-blur-lg border border-cyan-500/40 text-cyan-300 hover:text-white transition-all shadow-lg flex items-center gap-1.5 text-xs font-semibold"
+            onClick={() => {
+              setShowCellPanel(!showCellPanel);
+              if (!showCellPanel && window.innerWidth < 640) {
+                setShowLayerPanel(false); // Auto close layer panel on phone screens to prevent overlapping
+              }
+            }}
+            className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 p-1.5 rounded-lg bg-[#0a0f1e]/90 backdrop-blur-lg border border-cyan-500/40 text-cyan-300 hover:text-white transition-all shadow-lg flex items-center gap-1.5 text-xs font-semibold"
             title={showCellPanel ? 'Hide Right Cell Panel' : 'Show Right Cell Panel'}
           >
             {showCellPanel ? <EyeOff className="h-3.5 w-3.5 text-cyan-400" /> : <Eye className="h-3.5 w-3.5 text-cyan-400" />}
-            <span className="hidden sm:inline text-[10px] text-cyan-300">Cell Details</span>
+            <span className="text-[10px] text-cyan-300">Cell Details</span>
           </button>
         )}
 
-        {/* Left Floating Layer Controls Panel (Compact Size) */}
+        {/* Left Floating Layer Controls Panel */}
         {showLayerPanel && (
-          <div className="absolute top-12 left-4 z-10 w-56 sm:w-64 bg-[#0a0f1e]/95 backdrop-blur-xl p-2.5 rounded-xl border border-[#1e2d48] max-h-[60vh] overflow-y-auto shadow-2xl space-y-1.5 text-[11px]">
+          <div className="absolute top-10 left-2 sm:top-12 sm:left-4 z-10 w-[calc(100vw-2rem)] max-w-[240px] sm:w-64 bg-[#0a0f1e]/95 backdrop-blur-xl p-2 sm:p-2.5 rounded-xl border border-[#1e2d48] max-h-[50vh] sm:max-h-[60vh] overflow-y-auto shadow-2xl space-y-1.5 text-[11px]">
             <div className="flex items-center justify-between pb-1.5 border-b border-[#1e2d48]">
               <span className="text-[11px] font-bold text-slate-200 flex items-center gap-1.5">
                 <Layers className="h-3.5 w-3.5 text-cyan-400" />
@@ -1383,9 +1392,9 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
           </div>
         )}
 
-        {/* Right Selected Cell Inspection Panel (Compact Size, Independent Eye Control) */}
+        {/* Right Selected Cell Inspection Panel */}
         {showCellPanel && selectedCell && (
-          <div className="absolute top-12 right-4 z-10 w-60 sm:w-64 bg-[#0a0f1e]/95 backdrop-blur-xl p-2.5 rounded-xl border border-cyan-500/30 shadow-2xl space-y-1.5 text-[11px]">
+          <div className="absolute top-10 right-2 sm:top-12 sm:right-4 z-10 w-[calc(100vw-2rem)] max-w-[240px] sm:w-64 bg-[#0a0f1e]/95 backdrop-blur-xl p-2 sm:p-2.5 rounded-xl border border-cyan-500/30 shadow-2xl space-y-1.5 text-[11px]">
             <div className="flex items-center justify-between pb-1 border-b border-[#1e2d48]">
               <div>
                 <span className="text-[9px] font-mono text-cyan-400 block uppercase tracking-wider">5 KM SUB-GRID CELL</span>
@@ -1426,7 +1435,7 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
         )}
 
         {is3DEnabled && (
-          <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0a0f1e]/85 backdrop-blur-lg border border-violet-500/30 text-[11px] text-violet-300 font-mono">
+          <div className="hidden sm:flex absolute bottom-4 left-4 z-10 items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0a0f1e]/85 backdrop-blur-lg border border-violet-500/30 text-[11px] text-violet-300 font-mono">
             <Compass className="h-3.5 w-3.5 text-violet-400 animate-spin" style={{ animationDuration: '8s' }} />
             3D Globe View Active • GIS Radar Overlay
           </div>
@@ -1434,25 +1443,32 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
       </div>
 
       {/* Bottom Time Step Bar */}
-      <div className="bg-[#0a0f1e]/95 backdrop-blur-xl border-t border-[#1a2540] p-3 flex flex-col sm:flex-row items-center justify-between gap-3 z-20">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setIsPlaying(!isPlaying)}
-            className="p-2 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold transition-all shadow-lg shadow-cyan-600/20"
-          >
-            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-          </button>
-          <span className="text-xs font-mono text-cyan-300 shrink-0 font-bold">
-            Forecast Step: {selectedTimeStep >= 0 ? `+${selectedTimeStep}h` : `${selectedTimeStep}h`}
-          </span>
+      <div className="bg-[#0a0f1e]/95 backdrop-blur-xl border-t border-[#1a2540] p-2 sm:p-3 flex flex-col sm:flex-row items-center justify-between gap-2 z-20">
+        <div className="flex items-center justify-between w-full sm:w-auto gap-2">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsPlaying(!isPlaying)}
+              className="p-1.5 sm:p-2 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold transition-all shadow-lg shadow-cyan-600/20"
+            >
+              {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            </button>
+            <span className="text-xs font-mono text-cyan-300 shrink-0 font-bold">
+              Step: {selectedTimeStep >= 0 ? `+${selectedTimeStep}h` : `${selectedTimeStep}h`}
+            </span>
+          </div>
+
+          <div className="sm:hidden text-[10px] text-slate-400 font-mono">
+            Pan-India NCUM Ensemble
+          </div>
         </div>
 
-        <div className="flex items-center gap-1 overflow-x-auto w-full sm:w-auto py-1">
+        {/* Scrollable forecast steps with right padding for mobile chatbot button */}
+        <div className="flex items-center gap-1 overflow-x-auto w-full sm:w-auto py-1 no-scrollbar pr-14 sm:pr-0">
           {timeSteps.map(step => (
             <button
               key={step.hour}
               onClick={() => setSelectedTimeStep(step.hour)}
-              className={`px-3 py-1 rounded-md text-xs font-mono font-medium transition-all shrink-0 ${
+              className={`px-2.5 py-1 rounded-md text-[11px] sm:text-xs font-mono font-medium transition-all shrink-0 ${
                 selectedTimeStep === step.hour
                   ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold shadow-lg shadow-cyan-500/25'
                   : 'bg-[#111827] text-slate-400 hover:text-slate-200 border border-[#1e2d48] hover:border-[#2a3f5f]'

@@ -975,7 +975,7 @@ export const CycloneTracker: React.FC = () => {
           </div>
 
           {/* Floating Right Top: Current Active Point Compact Display Card */}
-          <div className={`absolute top-11 sm:top-14 md:top-3 right-2 sm:right-3 z-20 w-[calc(100vw-1rem)] max-w-[240px] sm:w-60 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 p-2 rounded-xl shadow-2xl space-y-1.5 transition-all ${
+          <div className={`absolute top-12 sm:top-14 md:top-3 right-2 sm:right-3 z-20 w-[calc(100vw-1rem)] max-w-[240px] sm:w-60 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 p-2 rounded-xl shadow-2xl space-y-1.5 transition-all ${
             showMobileStats ? 'block' : 'hidden md:block'
           }`}>
             <div className="flex items-center justify-between border-b border-slate-800 pb-1">
@@ -1024,7 +1024,7 @@ export const CycloneTracker: React.FC = () => {
           </div>
 
           {/* ── Windy-Style Bottom Timeline Controller Dock (Responsive Mobile Dock) ── */}
-          <div className="absolute bottom-2 left-2 right-2 sm:bottom-4 sm:left-4 sm:right-4 z-20 bg-slate-900/95 backdrop-blur-md p-2 sm:p-3 rounded-xl sm:rounded-2xl border border-slate-800/90 shadow-2xl flex flex-col gap-1.5 sm:gap-2">
+          <div className="absolute bottom-2 left-2 right-2 sm:bottom-4 sm:left-4 sm:right-4 z-20 bg-slate-900/95 backdrop-blur-md p-2 sm:p-3 rounded-xl sm:rounded-2xl border border-slate-800/90 shadow-2xl flex flex-col gap-1.5 sm:gap-2 pr-14 sm:pr-3">
             
             <div className="flex items-center justify-between gap-1 sm:px-2">
               <div className="flex items-center gap-2 sm:gap-3">

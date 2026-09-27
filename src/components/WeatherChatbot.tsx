@@ -356,25 +356,25 @@ export const WeatherChatbot: React.FC<WeatherChatbotProps> = ({ onNavigateToTab 
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end">
+    <div className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-50 flex flex-col items-end">
       {/* Floating Toggle Button */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="group relative flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white shadow-2xl shadow-cyan-500/40 transition-all duration-300 transform hover:scale-105"
+          className="group relative flex items-center gap-2 px-3 py-2.5 sm:px-4 sm:py-3 rounded-2xl bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white shadow-2xl shadow-cyan-500/40 transition-all duration-300 transform hover:scale-105"
         >
           <span className="relative flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-300 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-400"></span>
           </span>
-          <Bot className="h-5 w-5 text-white" />
-          <span className="text-xs font-bold font-sans tracking-wide">Ask StormTrace AI</span>
+          <Bot className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+          <span className="text-[11px] sm:text-xs font-bold font-sans tracking-wide">Ask StormTrace AI</span>
         </button>
       )}
 
       {/* Glassmorphism Chat Drawer Panel */}
       {isOpen && (
-        <div className="w-[calc(100vw-2rem)] max-w-sm sm:w-[420px] h-[540px] max-h-[80vh] rounded-2xl bg-white/95 dark:bg-[#0b1222]/95 backdrop-blur-2xl border border-slate-200 dark:border-cyan-500/30 shadow-2xl flex flex-col overflow-hidden transition-all duration-300 animate-in fade-in slide-in-from-bottom-5">
+        <div className="w-[calc(100vw-1.5rem)] max-w-sm sm:w-[420px] h-[500px] sm:h-[540px] max-h-[75vh] sm:max-h-[80vh] rounded-2xl bg-white/95 dark:bg-[#0b1222]/95 backdrop-blur-2xl border border-slate-200 dark:border-cyan-500/30 shadow-2xl flex flex-col overflow-hidden transition-all duration-300 animate-in fade-in slide-in-from-bottom-5 z-[60]">
           {/* Header Bar */}
           <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
             <div className="flex items-center gap-2.5">

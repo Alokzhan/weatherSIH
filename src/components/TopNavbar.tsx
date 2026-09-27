@@ -114,7 +114,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
       {/* Right Controls */}
       <div className="flex items-center gap-1 sm:gap-2 shrink-0">
         {/* Backend Connection Status Badge */}
-        <div className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[11px] font-bold transition-colors ${
+        <div className={`hidden sm:flex items-center gap-1.5 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl border text-[10px] sm:text-[11px] font-bold transition-colors ${
           isLive 
             ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400' 
             : 'bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400'
@@ -139,12 +139,12 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
         </div>
 
         {/* Region Selector */}
-        <div className="flex items-center gap-1 bg-slate-50 dark:bg-[#111827] border border-slate-200 dark:border-[#1e2d48] rounded-xl px-2 py-1.5 text-xs text-slate-700 dark:text-slate-200">
+        <div className="flex items-center gap-1 bg-slate-50 dark:bg-[#111827] border border-slate-200 dark:border-[#1e2d48] rounded-xl px-1.5 sm:px-2 py-1 sm:py-1.5 text-xs text-slate-700 dark:text-slate-200">
           <Globe className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400 shrink-0" />
           <select
             value={selectedRegion}
             onChange={(e) => setSelectedRegion(e.target.value as IndiaRegionId)}
-            className="bg-transparent text-xs font-semibold focus:outline-none cursor-pointer text-slate-800 dark:text-slate-200 max-w-[85px] sm:max-w-none"
+            className="bg-transparent text-[11px] sm:text-xs font-semibold focus:outline-none cursor-pointer text-slate-800 dark:text-slate-200 max-w-[70px] sm:max-w-none"
           >
             {INDIA_REGION_PRESETS.map(r => (
               <option key={r.id} value={r.id} className="bg-white dark:bg-[#111827]">{r.name}</option>
@@ -155,7 +155,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
         {/* Theme Toggle */}
         <button
           onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-          className="p-2 min-h-[38px] min-w-[38px] flex items-center justify-center rounded-xl bg-slate-50 dark:bg-[#111827] border border-slate-200 dark:border-[#1e2d48] text-slate-600 dark:text-amber-400 hover:bg-slate-100 dark:hover:bg-[#1e2d48] transition-all"
+          className="p-1.5 sm:p-2 min-h-[36px] min-w-[36px] sm:min-h-[38px] sm:min-w-[38px] flex items-center justify-center rounded-xl bg-slate-50 dark:bg-[#111827] border border-slate-200 dark:border-[#1e2d48] text-slate-600 dark:text-amber-400 hover:bg-slate-100 dark:hover:bg-[#1e2d48] transition-all"
           title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
         >
           {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
@@ -165,7 +165,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
         <div className="relative">
           <button
             onClick={() => setShowAlertModal(!showAlertModal)}
-            className="p-2 min-h-[38px] min-w-[38px] flex items-center justify-center rounded-xl bg-slate-50 dark:bg-[#111827] border border-slate-200 dark:border-[#1e2d48] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1e2d48] relative transition-all"
+            className="p-1.5 sm:p-2 min-h-[36px] min-w-[36px] sm:min-h-[38px] sm:min-w-[38px] flex items-center justify-center rounded-xl bg-slate-50 dark:bg-[#111827] border border-slate-200 dark:border-[#1e2d48] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1e2d48] relative transition-all"
           >
             <Bell className="h-4 w-4" />
             <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
@@ -173,7 +173,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
           </button>
 
           {showAlertModal && (
-            <div className="absolute right-0 mt-2 w-72 sm:w-80 bg-white dark:bg-[#0f1628] border border-slate-200 dark:border-[#1a2540] rounded-2xl shadow-2xl p-4 z-50 text-xs space-y-3">
+            <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] max-w-xs sm:w-80 bg-white dark:bg-[#0f1628] border border-slate-200 dark:border-[#1a2540] rounded-2xl shadow-2xl p-3.5 z-50 text-xs space-y-3">
               <div className="flex justify-between items-center border-b border-slate-100 dark:border-[#1e2d48] pb-2">
                 <span className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
                   <AlertTriangle className="h-4 w-4 text-red-500" />
@@ -205,7 +205,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
         {/* Login / Auth Page Button */}
         <button
           onClick={() => onNavigateToTab && onNavigateToTab('auth')}
-          className="px-2.5 py-1.5 min-h-[38px] rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-blue-600/20"
+          className="px-2 sm:px-2.5 py-1.5 min-h-[36px] sm:min-h-[38px] rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-blue-600/20"
           title="Sign In or Register Account"
         >
           <LogIn className="h-3.5 w-3.5" />
