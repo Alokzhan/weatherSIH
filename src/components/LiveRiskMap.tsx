@@ -203,25 +203,22 @@ const PAN_INDIA_RAINFALL_FEATURES = [
 const FREE_DARK_STYLE: mapboxgl.Style = {
   version: 8,
   sources: {
-    'carto-dark': {
+    'esri-dark': {
       type: 'raster',
       tiles: [
-        'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-        'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-        'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-        'https://d.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+        'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
       ],
       tileSize: 256,
-      attribution: '© OpenStreetMap contributors © CARTO'
+      attribution: '© Esri © OpenStreetMap contributors'
     }
   },
   layers: [
     {
-      id: 'carto-dark-base',
+      id: 'esri-dark-base',
       type: 'raster',
-      source: 'carto-dark',
+      source: 'esri-dark',
       minzoom: 0,
-      maxzoom: 19
+      maxzoom: 16
     }
   ]
 };
