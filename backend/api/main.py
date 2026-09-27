@@ -4,11 +4,16 @@ import math
 import random
 import requests
 import time
-import numpy as np
+try:
+    import numpy as np
+except ImportError:
+    np = None
+
 try:
     import torch
 except ImportError:
     torch = None
+
 from fastapi import FastAPI, Query, Response
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -30,12 +35,19 @@ try:
     from stage2_diffusion.ddpm import run_diffusion_downscale
     from stage2_diffusion.downscale_cnn import calculate_metrics
     from stage2_diffusion.physics_loss import physics_informed_loss
-except ImportError:
-    from backend.stage1_gnn.efi_compute import compute_efi_1d
-    from backend.stage1_gnn.gnn_model import run_gnn_inference
-    from backend.stage2_diffusion.ddpm import run_diffusion_downscale
-    from backend.stage2_diffusion.downscale_cnn import calculate_metrics
-    from backend.stage2_diffusion.physics_loss import physics_informed_loss
+except Exception:
+    try:
+        from backend.stage1_gnn.efi_compute import compute_efi_1d
+        from backend.stage1_gnn.gnn_model import run_gnn_inference
+        from backend.stage2_diffusion.ddpm import run_diffusion_downscale
+        from backend.stage2_diffusion.downscale_cnn import calculate_metrics
+        from backend.stage2_diffusion.physics_loss import physics_informed_loss
+    except Exception:
+        compute_efi_1d = None
+        run_gnn_inference = None
+        run_diffusion_downscale = None
+        calculate_metrics = None
+        physics_informed_loss = None
 
 
 import sqlite3
