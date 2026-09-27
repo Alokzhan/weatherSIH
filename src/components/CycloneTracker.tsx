@@ -504,9 +504,13 @@ export const CycloneTracker: React.FC = () => {
     let tileOptions: L.TileLayerOptions;
 
     if (tileMode === 'satellite') {
-      // ESRI World Imagery — completely free, no API key needed
-      tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-      tileOptions = { maxZoom: 18, attribution: '© Esri © OpenStreetMap contributors' };
+      // ESRI World Imagery + State/District Boundaries & Places overlay
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 18, attribution: '© Esri © OpenStreetMap contributors'
+      }).addTo(map);
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 18, zIndex: 50
+      }).addTo(map);
     } else if (tileMode === 'street') {
       tileUrl = hasMapbox
         ? `https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=${API_CONFIG.mapboxPublicToken}`
@@ -514,17 +518,16 @@ export const CycloneTracker: React.FC = () => {
       tileOptions = hasMapbox
         ? { maxZoom: 18, tileSize: 512, zoomOffset: -1, attribution: '© Mapbox © OpenStreetMap' }
         : { maxZoom: 18, attribution: '© OpenStreetMap contributors' };
+      L.tileLayer(tileUrl, tileOptions).addTo(map);
     } else {
-      // Dark mode: Mapbox preferred → ESRI World Dark Gray Base as free fallback (100% free, no API key, zero watermarks)
-      tileUrl = hasMapbox
-        ? `https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/{z}/{x}/{y}?access_token=${API_CONFIG.mapboxPublicToken}`
-        : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
-      tileOptions = hasMapbox
-        ? { maxZoom: 18, tileSize: 512, zoomOffset: -1, attribution: '© Mapbox © OpenStreetMap' }
-        : { maxZoom: 16, attribution: '© Esri © OpenStreetMap contributors' };
+      // Dark mode: Base + State/District/City Reference Labels Overlay
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 18, attribution: '© Esri © OpenStreetMap contributors'
+      }).addTo(map);
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 18, zIndex: 50
+      }).addTo(map);
     }
-
-    L.tileLayer(tileUrl, tileOptions).addTo(map);
   }, [tileMode]);
 
   // ─── RENDER CYCLONE TRACK, LIVE WIND SQUALLS & MARKERS ───

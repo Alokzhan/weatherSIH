@@ -210,6 +210,14 @@ const FREE_DARK_STYLE: mapboxgl.Style = {
       ],
       tileSize: 256,
       attribution: '© Esri © OpenStreetMap contributors'
+    },
+    'esri-dark-ref': {
+      type: 'raster',
+      tiles: [
+        'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}'
+      ],
+      tileSize: 256,
+      attribution: '© Esri'
     }
   },
   layers: [
@@ -218,7 +226,14 @@ const FREE_DARK_STYLE: mapboxgl.Style = {
       type: 'raster',
       source: 'esri-dark',
       minzoom: 0,
-      maxzoom: 16
+      maxzoom: 18
+    },
+    {
+      id: 'esri-dark-ref-layer',
+      type: 'raster',
+      source: 'esri-dark-ref',
+      minzoom: 0,
+      maxzoom: 18
     }
   ]
 };
@@ -233,6 +248,14 @@ const FREE_SATELLITE_STYLE: mapboxgl.Style = {
       ],
       tileSize: 256,
       attribution: '© Esri © OpenStreetMap contributors'
+    },
+    'esri-satellite-ref': {
+      type: 'raster',
+      tiles: [
+        'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
+      ],
+      tileSize: 256,
+      attribution: '© Esri'
     }
   },
   layers: [
@@ -240,6 +263,13 @@ const FREE_SATELLITE_STYLE: mapboxgl.Style = {
       id: 'esri-satellite-base',
       type: 'raster',
       source: 'esri-satellite',
+      minzoom: 0,
+      maxzoom: 18
+    },
+    {
+      id: 'esri-satellite-ref-layer',
+      type: 'raster',
+      source: 'esri-satellite-ref',
       minzoom: 0,
       maxzoom: 18
     }
