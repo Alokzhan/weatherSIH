@@ -434,6 +434,7 @@ export const CycloneTracker: React.FC = () => {
   const [liveWindStatus, setLiveWindStatus] = useState<LiveCycloneSystemStatus | null>(null);
   const [isLoadingLiveWind, setIsLoadingLiveWind] = useState<boolean>(true);
   const [selectedWindSpot, setSelectedWindSpot] = useState<LiveWindSpot | null>(null);
+  const [showNoticePopup, setShowNoticePopup] = useState<boolean>(true);
 
   const refreshLiveWindStatus = useCallback(() => {
     setIsLoadingLiveWind(true);
@@ -878,32 +879,54 @@ export const CycloneTracker: React.FC = () => {
         <div className="flex-1 relative h-full w-full min-h-[350px] sm:min-h-[400px] lg:min-h-[420px]">
           <div ref={mapContainerRef} className="absolute inset-0 z-10 w-full h-full bg-[#070b16]" />
 
-          {/* Live Active Cyclone Check Notice Banner */}
+          {/* Live Active Cyclone Check Notice Banner with Eye / EyeOff Toggle */}
           {trackingMode === 'live_cyclone' && liveWindStatus && !liveWindStatus.hasActiveCyclone && (
-            <div className="absolute top-12 sm:top-14 left-1/2 -translate-x-1/2 z-30 w-[calc(100vw-2rem)] max-w-md bg-slate-900/95 backdrop-blur-xl border border-amber-500/50 p-3 sm:p-4 rounded-2xl shadow-2xl space-y-2.5 text-center">
-              <div className="flex items-center justify-center gap-2 text-amber-400 font-black text-xs sm:text-sm uppercase tracking-wider">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                <span>NO ACTIVE CYCLONE AT PRESENT</span>
-              </div>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Real-time IMD & Open-Meteo telemetry detects <strong>no active tropical cyclone system</strong> currently exceeding 34kt (62 km/h) in the Indian Ocean / BOB basin.
-              </p>
-              <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+            showNoticePopup ? (
+              <div className="absolute top-12 sm:top-14 left-1/2 -translate-x-1/2 z-30 w-[calc(100vw-2rem)] max-w-md bg-slate-900/95 backdrop-blur-xl border border-amber-500/50 p-3 sm:p-4 rounded-2xl shadow-2xl space-y-2.5 text-center relative transition-all">
+                {/* Eye Hide Button */}
                 <button
-                  onClick={() => setTrackingMode('live_wind')}
-                  className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5"
+                  onClick={() => setShowNoticePopup(false)}
+                  className="absolute top-2.5 right-2.5 p-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition flex items-center gap-1 text-[10px]"
+                  title="Hide Notice Box"
                 >
-                  <Wind className="h-3.5 w-3.5" />
-                  Track Live High-Wind Squalls ({liveWindStatus.highWindSpotsCount} Monitored Zones)
+                  <EyeOff className="h-3.5 w-3.5 text-amber-400" />
+                  <span className="hidden sm:inline font-mono">Hide</span>
                 </button>
-                <button
-                  onClick={() => setTrackingMode('historical_archive')}
-                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-xs transition flex items-center gap-1.5"
-                >
-                  📜 Replay Historical Case Study
-                </button>
+
+                <div className="flex items-center justify-center gap-2 text-amber-400 font-black text-xs sm:text-sm uppercase tracking-wider pr-6">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                  <span>NO ACTIVE CYCLONE AT PRESENT</span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Real-time IMD & Open-Meteo telemetry detects <strong>no active tropical cyclone system</strong> currently exceeding 34kt (62 km/h) in the Indian Ocean / BOB basin.
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                  <button
+                    onClick={() => setTrackingMode('live_wind')}
+                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5"
+                  >
+                    <Wind className="h-3.5 w-3.5" />
+                    Track Live High-Wind Squalls ({liveWindStatus.spots.length} Monitored Zones)
+                  </button>
+                  <button
+                    onClick={() => setTrackingMode('historical_archive')}
+                    className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-xs transition flex items-center gap-1.5"
+                  >
+                    📜 Replay Historical Case Study
+                  </button>
+                </div>
               </div>
-            </div>
+            ) : (
+              /* Eye Show Pill Button when Notice is Hidden */
+              <button
+                onClick={() => setShowNoticePopup(true)}
+                className="absolute top-12 sm:top-14 left-1/2 -translate-x-1/2 z-30 px-3 py-1.5 rounded-xl bg-slate-900/95 backdrop-blur-md border border-amber-500/60 text-amber-300 text-xs font-bold transition-all shadow-xl flex items-center gap-1.5 hover:scale-105 hover:bg-slate-800"
+                title="Show Active Cyclone Notice Popup"
+              >
+                <Eye className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+                <span>Notice: No Active Cyclone</span>
+              </button>
+            )
           )}
 
           {/* Floating Left Top: Model Toggles Bar with Eye Buttons & Mobile Auto-Scroll */}
@@ -1054,17 +1077,33 @@ export const CycloneTracker: React.FC = () => {
 
               {/* Step Markers underneath scrubber */}
               <div className="flex justify-between mt-1 text-[8px] sm:text-[10px] font-semibold text-slate-400">
-                {cyclone.points.map((pt, i) => (
-                  <button
-                    key={pt.id}
-                    onClick={() => handlePointSelect(i)}
-                    className={`transition-colors hover:text-white ${
-                      i === activePointIndex ? 'text-amber-400 font-bold underline' : ''
-                    }`}
-                  >
-                    {pt.timeLabel.split('-')[0]}
-                  </button>
-                ))}
+                {cyclone.points.map((pt, i) => {
+                  const stepLabelsMap: Record<string, string> = {
+                    p1: 'Wed 23',
+                    p2: 'Thu 24',
+                    p3: 'Fri 25 (Live)',
+                    p4: 'Sat 26 AM',
+                    p5: 'Sat 26 PM',
+                    p6: 'Sun 27 AM',
+                    bp1: 'Thu 24',
+                    bp2: 'Fri 25',
+                    bp3: 'Sat 26 (Live)',
+                    bp4: 'Sun 27 AM',
+                    bp5: 'Sun 27 PM',
+                  };
+                  const label = stepLabelsMap[pt.id] || pt.timeLabel.split('-')[0];
+                  return (
+                    <button
+                      key={pt.id}
+                      onClick={() => handlePointSelect(i)}
+                      className={`transition-colors hover:text-white ${
+                        i === activePointIndex ? 'text-amber-400 font-bold underline' : ''
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
