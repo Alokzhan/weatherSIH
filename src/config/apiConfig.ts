@@ -11,6 +11,7 @@ const getStoredBackendUrl = (): string => {
 
 export const API_CONFIG = {
   mapboxPublicToken: import.meta.env.VITE_MAPBOX_TOKEN || '',
+  owmApiKey: import.meta.env.VITE_OWM_KEY || '8f993da72c69f972e707d5e1540fb9de',
   apiUrl: import.meta.env.VITE_API_URL || getStoredBackendUrl() || '',
 };
 
@@ -33,7 +34,10 @@ export function getApiEndpoint(path: string): string {
 }
 
 export function getOpenWeatherTileUrl(layer: 'precipitation_new' | 'clouds_new' | 'temp_new' | 'wind_new' = 'precipitation_new') {
-  // Proxy through backend endpoint when API url is present, else standard relative path
+  const owmKey = API_CONFIG.owmApiKey;
+  if (owmKey) {
+    return `https://tile.openweathermap.org/map/${layer}/{z}/{x}/{y}.png?appid=${owmKey}`;
+  }
   return getApiEndpoint(`/api/v1/tiles/owm/${layer}/{z}/{x}/{y}`);
 }
 

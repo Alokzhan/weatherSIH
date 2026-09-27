@@ -1,5 +1,39 @@
 import type { LocationRiskData } from '../types/weather';
 import { MOCK_LOCATION_RISKS } from '../data/mockData';
+import { API_CONFIG } from '../config/apiConfig';
+
+/**
+ * Fetch live current weather metrics directly from OpenWeatherMap API
+ */
+export async function fetchOpenWeatherMapLive(lat: number, lng: number): Promise<{
+  tempC: number;
+  humidity: number;
+  pressureMb: number;
+  windSpeedKmh: number;
+  description: string;
+  icon: string;
+  source: string;
+} | null> {
+  const owmKey = API_CONFIG.owmApiKey;
+  if (!owmKey) return null;
+  try {
+    const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${owmKey}&units=metric`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return {
+      tempC: Math.round(data.main?.temp ?? 25),
+      humidity: data.main?.humidity ?? 65,
+      pressureMb: data.main?.pressure ?? 1012,
+      windSpeedKmh: Math.round((data.wind?.speed ?? 0) * 3.6 * 10) / 10,
+      description: data.weather?.[0]?.description ? (data.weather[0].description.charAt(0).toUpperCase() + data.weather[0].description.slice(1)) : 'Clear Sky',
+      icon: data.weather?.[0]?.icon || '01d',
+      source: 'OpenWeatherMap Live API (OWM 2.5)',
+    };
+  } catch (err) {
+    console.warn('OpenWeatherMap API fetch error:', err);
+    return null;
+  }
+}
 
 /**
  * Perform OpenStreetMap Nominatim Geocoding across any location in India
@@ -46,7 +80,7 @@ export async function geocodeIndiaLocation(query: string): Promise<{
 }
 
 /**
- * Fetch Live ECMWF / ERA5 weather forecast data from Open-Meteo for any lat/lon in India
+ * Fetch Live ECMWF / ERA5 weather forecast data from Open-Meteo & OpenWeatherMap for any lat/lon in India
  */
 export async function fetchLiveOpenMeteoRisk(searchQuery: string): Promise<LocationRiskData | null> {
   try {
@@ -54,11 +88,13 @@ export async function fetchLiveOpenMeteoRisk(searchQuery: string): Promise<Locat
     if (!geo) return null;
 
     const { lat, lng, displayName, district, state, pinCode } = geo;
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=precipitation_sum,precipitation_probability_max,temperature_2m_max,wind_speed_10m_max&hourly=precipitation,precipitation_probability&timezone=Asia/Kolkata&forecast_days=7`;
-    
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    const weather = await res.json();
+    const [weatherRes, liveOwm] = await Promise.all([
+      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=precipitation_sum,precipitation_probability_max,temperature_2m_max,wind_speed_10m_max&hourly=precipitation,precipitation_probability&timezone=Asia/Kolkata&forecast_days=7`),
+      fetchOpenWeatherMapLive(lat, lng)
+    ]);
+
+    if (!weatherRes.ok) return null;
+    const weather = await weatherRes.json();
 
     const dailyRain = weather.daily?.precipitation_sum || [0, 0, 0, 0, 0];
     const dailyProb = weather.daily?.precipitation_probability_max || [0, 0, 0, 0, 0];
@@ -130,6 +166,7 @@ export async function fetchLiveOpenMeteoRisk(searchQuery: string): Promise<Locat
       hourlyProbabilities,
       nearestThreatDistanceKm: Math.round((2.0 + (lat % 3)) * 10) / 10,
       nearestThreatName: `LIVE-METEO-${district.toUpperCase().replace(/[^A-Z0-9]/g, '-')}-CONVECTIVE-CELL`,
+      liveWeather: liveOwm || undefined,
       safetyAdvisory: {
         public: riskLevel === 'critical'
           ? `EXTREME WEATHER RED ALERT: ${rain24} mm 24h rainfall forecasted over ${district} (${state}). High risk of flash floods, landslides on slopes, and severe waterlogging.`

@@ -113,6 +113,15 @@ export interface LocationRiskData {
   hourlyProbabilities: { hour: string; prob: number; rainMm: number }[];
   nearestThreatDistanceKm: number;
   nearestThreatName: string;
+  liveWeather?: {
+    tempC: number;
+    humidity: number;
+    pressureMb: number;
+    windSpeedKmh: number;
+    description: string;
+    icon: string;
+    source: string;
+  };
   safetyAdvisory: {
     public: string;
     farmer: string;

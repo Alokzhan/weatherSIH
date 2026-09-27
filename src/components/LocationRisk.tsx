@@ -9,7 +9,11 @@ import {
   Radio, 
   Clock, 
   ArrowRight,
-  Loader2
+  Loader2,
+  Thermometer,
+  Wind,
+  Droplets,
+  CloudSun
 } from 'lucide-react';
 import type { LocationRiskData } from '../types/weather';
 import { fetchApiLocationRisk } from '../services/apiService';
@@ -154,6 +158,39 @@ export const LocationRisk: React.FC<LocationRiskProps> = ({ initialLocKey = 'pra
                 <span className="text-3xl font-black text-red-400 font-mono">{locData.riskScore}<span className="text-sm font-normal text-slate-500">/100</span></span>
               </div>
             </div>
+
+            {/* Live OpenWeatherMap API Current Metrics Banner */}
+            {locData.liveWeather && (
+              <div className="bg-gradient-to-r from-cyan-950/40 via-slate-900 to-slate-900 border border-cyan-500/30 p-4 rounded-xl flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-cyan-900/50 rounded-lg text-cyan-300">
+                    <CloudSun className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-slate-100">{locData.liveWeather.description}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-mono border border-cyan-500/30">OpenWeatherMap Live API</span>
+                    </div>
+                    <span className="text-xs text-slate-400">Live Station Weather &amp; Atmosphere</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-6 text-xs font-mono">
+                  <div className="flex items-center gap-1.5 text-amber-300">
+                    <Thermometer className="h-4 w-4 text-amber-400" />
+                    <span className="font-bold text-sm">{locData.liveWeather.tempC}°C</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-cyan-300">
+                    <Droplets className="h-4 w-4 text-cyan-400" />
+                    <span>{locData.liveWeather.humidity}% Humidity</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-emerald-300">
+                    <Wind className="h-4 w-4 text-emerald-400" />
+                    <span>{locData.liveWeather.windSpeedKmh} km/h Wind</span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* 4-Step Forecast Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
