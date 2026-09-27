@@ -1,1 +1,0 @@
-var e=()=>typeof window<`u`&&localStorage.getItem(`STORMTRACE_BACKEND_URL`)||``,t={mapboxPublicToken:``,owmApiKey:`8f993da72c69f972e707d5e1540fb9de`,apiUrl:e()||``};function n(t){let n=e()||``;return n?`${n.replace(/\/$/,``)}${t.startsWith(`/`)?t:`/`+t}`:t}export{n,t};
