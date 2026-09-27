@@ -19,7 +19,7 @@ import {
 import type { MapLayerId, ThreatObject, GridCell5km, IndiaRegionId } from '../types/weather';
 import { INDIA_REGION_PRESETS } from '../data/mockData';
 import { fetchApiThreatObjects, fetchApiRiskGrid } from '../services/apiService';
-import { API_CONFIG } from '../config/apiConfig';
+import { API_CONFIG, getOpenWeatherTileUrl } from '../config/apiConfig';
 
 interface LiveRiskMapProps {
   selectedRegion?: IndiaRegionId;
@@ -249,10 +249,7 @@ const FREE_SATELLITE_STYLE: mapboxgl.Style = {
   ]
 };
 
-function getMapStyleSpec(styleType: 'dark' | 'satellite'): string | mapboxgl.Style {
-  if (API_CONFIG.mapboxPublicToken) {
-    return styleType === 'dark' ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/satellite-streets-v12';
-  }
+function getMapStyleSpec(styleType: 'dark' | 'satellite'): mapboxgl.Style {
   return styleType === 'dark' ? FREE_DARK_STYLE : FREE_SATELLITE_STYLE;
 }
 
@@ -403,11 +400,11 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
         console.warn('Globe fog setting skipped:', e);
       }
 
-      // --- 1. RainViewer Live Precipitation Doppler Radar Raster Layer ---
+      // --- 1. RainViewer & OpenWeatherMap Live Precipitation Radar Raster Layer ---
       map.addSource('rain-radar-source', {
         type: 'raster',
         tiles: [
-          '/api/v1/tiles/radar/{z}/{x}/{y}',
+          getOpenWeatherTileUrl('precipitation_new'),
           'https://tilecache.rainviewer.com/v2/radar/nowcast_100m/{z}/{x}/{y}/2/1_1.png'
         ],
         tileSize: 256
