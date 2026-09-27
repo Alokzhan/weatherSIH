@@ -336,9 +336,18 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    // Graceful Mapbox GL Access Token setup (fallback token if empty)
-    const token = API_CONFIG.mapboxPublicToken || 'pk.mapbox_public_token_placeholder';
-    mapboxgl.accessToken = token;
+    // Graceful Mapbox GL Access Token setup
+    const token = API_CONFIG.mapboxPublicToken;
+    if (token && token.startsWith('pk.')) {
+      mapboxgl.accessToken = token;
+    }
+
+    // Disable Mapbox GL telemetry network events if no valid token
+    try {
+      if ((mapboxgl as any).config) {
+        (mapboxgl as any).config.EVENTS_URL = null;
+      }
+    } catch (e) {}
 
     const map = new mapboxgl.Map({
       container: mapContainerRef.current!,
