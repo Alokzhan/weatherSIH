@@ -11,7 +11,7 @@ const getStoredBackendUrl = (): string => {
 
 export const API_CONFIG = {
   mapboxPublicToken: import.meta.env.VITE_MAPBOX_TOKEN || '',
-  apiUrl: import.meta.env.VITE_API_URL || getStoredBackendUrl() || 'https://tangsang814-stromtrace.hf.space',
+  apiUrl: import.meta.env.VITE_API_URL || getStoredBackendUrl() || '',
 };
 
 export function setCustomBackendUrl(url: string): void {
@@ -25,7 +25,7 @@ export function setCustomBackendUrl(url: string): void {
 }
 
 export function getApiEndpoint(path: string): string {
-  const baseUrl = import.meta.env.VITE_API_URL || getStoredBackendUrl() || 'https://tangsang814-stromtrace.hf.space';
+  const baseUrl = import.meta.env.VITE_API_URL || getStoredBackendUrl() || '';
   if (!baseUrl) return path;
   const cleanBase = baseUrl.replace(/\/$/, '');
   const cleanPath = path.startsWith('/') ? path : '/' + path;

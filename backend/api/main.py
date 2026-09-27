@@ -5,7 +5,10 @@ import random
 import requests
 import time
 import numpy as np
-import torch
+try:
+    import torch
+except ImportError:
+    torch = None
 from fastapi import FastAPI, Query, Response
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
