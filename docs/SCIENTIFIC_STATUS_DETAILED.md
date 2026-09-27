@@ -1,7 +1,7 @@
-# SIH26078 Comprehensive Scientific Status & Implementation Verification Report
+﻿# Comprehensive Scientific Status & Implementation Verification Report
 
 **System Name:** StormTrace AI  
-**Problem Statement ID:** SIH26078  
+**Problem Statement ID:**  
 **Title:** AI-Driven Spatio-Temporal Tracking of Extreme Weather Anomalies in Medium-Range Forecasts  
 **Audit & Verification Date:** September 26, 2026  
 **Status:** 🟢 **ALL CORE ALGORITHMS & SCIENTIFIC REQUIREMENTS FULLY IMPLEMENTED & VERIFIED**
@@ -10,7 +10,7 @@
 
 ## 1. Problem Statement Requirements vs. Implementation Audit
 
-| SIH26078 Scientific Requirement | Algorithmic Implementation Path | Verification & Execution Status |
+| Scientific Requirement | Algorithmic Implementation Path | Verification & Execution Status |
 | :--- | :--- | :--- |
 | **1. 4D Extreme Anomaly Object Tracking (T+0 to T+240h)** | **Spherical ST-GNN + GATv2 Mesh (`backend/stage1_gnn/st_gnn_model.py`)**: Uses icosahedral spherical geodesic mesh ($S^2$) to model global atmospheric curvature. Combines GATv2 multi-head spatial graph attention with temporal self-attention transformer blocks. Connected component extractor (`backend/tracking/detector.py`) extracts dynamic centroid $(\text{lat}, \text{lon})$, 4D bounding boxes $[\text{lat}_{\min}, \text{lat}_{\max}, \text{lon}_{\min}, \text{lon}_{\max}]$, and surface area ($\text{km}^2$). | 🟢 **VERIFIED & TRAINED**<br>Model checkpoint saved to `backend/models/st_gnn_checkpoint.pt`. Executed & validated. |
 | **2. Physics-Informed High-Res Downscaling (12km $\rightarrow$ 5km)** | **Conditional DDPM Diffusion Downscaler (`backend/stage2_diffusion/ddpm.py`)**: Uses U-Net architecture conditioned on coarse NWP inputs and timestep embeddings. Enforces 5 atmospheric physics conservation laws (`backend/stage2_diffusion/physics_loss.py`):<br>1. Mass Conservation<br>2. Moisture Flux Divergence ($\nabla \cdot (v \cdot q)$)<br>3. Hydrostatic Energy Conservation<br>4. Relative Vorticity Conservation ($\zeta = \frac{\partial v}{\partial x} - \frac{\partial u}{\partial y}$)<br>5. Spectral Fourier Loss (prevents high-frequency peak smoothing). | 🟢 **VERIFIED & TRAINED**<br>Model checkpoint saved to `backend/models/ddpm_checkpoint.pt`. Executed & validated. |
@@ -49,4 +49,4 @@ python -m pytest backend/tests/
 - [x] **Windy-Style Interactive Trajectory Engine**: Live interactive map with trajectory nodes, model overlays, cone swath, and timeline animation scrubber.
 
 ---
-*Verified and certified for SIH26078 Scientific Compliance.*
+*Verified and certified for Scientific Compliance.*

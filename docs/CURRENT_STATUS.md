@@ -1,6 +1,6 @@
-# SIH26078 System Compliance Matrix
+﻿# System Compliance Matrix
 
-**Problem Statement Title:** SIH26078 — AI-Driven Spatio-Temporal Tracking of Extreme Weather Anomalies in Medium-Range Forecasts  
+**Problem Statement Title:** — AI-Driven Spatio-Temporal Tracking of Extreme Weather Anomalies in Medium-Range Forecasts  
 **Audit Date:** September 26, 2026  
 **Status Key:**  
 - 🟢 **GREEN**: Fully Implemented & Verified with Real Data  

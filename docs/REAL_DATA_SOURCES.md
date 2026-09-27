@@ -1,6 +1,6 @@
-# 🌐 Real Meteorological Data Sources Specification
+﻿# 🌐 Real Meteorological Data Sources Specification
 
-This document details all official real-world meteorological datasets integrated into the **StormTrace AI** system (*SIH Problem Statement SIH26078*).
+This document details all official real-world meteorological datasets integrated into the **StormTrace AI** system (*Problem Statement PS-EW2026*).
 
 ---
 
@@ -61,7 +61,7 @@ This document details all official real-world meteorological datasets integrated
 * **Historical Period**: Operational daily forecasts ($2020 - \text{Present}$).
 * **File Format**: GRIB2 (`.grib2`) / NetCDF4 (`.nc`).
 * **License/Access Restrictions**: Restricted MoES Operational NWP Access.
-* **Exact Purpose**: Primary SIH26078 input for Stage 1 PyTorch Spherical ST-GNN multi-member storm centroid tracking.
+* **Exact Purpose**: Primary  input for Stage 1 PyTorch Spherical ST-GNN multi-member storm centroid tracking.
 
 ---
 
