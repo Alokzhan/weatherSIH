@@ -399,3 +399,8 @@ select:focus-visible {
   background: rgba(59, 130, 246, 0.3);
   color: inherit;
 }
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
