@@ -1,3 +1,13 @@
+---
+title: StormTrace AI Backend
+emoji: 🌩️
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # 🌩️ StormTrace AI
 ### **Automated 4D EPS Anomaly Tracking & 5km Physics-Informed Diffusion Downscaling System**
 *SIH Problem Statement SIH26078: Extreme Weather Anomaly Tracking and Hyperlocal Impact Downscaling*
