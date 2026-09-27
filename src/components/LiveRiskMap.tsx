@@ -8,7 +8,6 @@ import {
   Maximize2, 
   Minimize2, 
   Sliders, 
-  Check, 
   RefreshCw,
   Globe,
   Mountain,
@@ -1362,7 +1361,11 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
                       <span className="text-xs">{info.icon}</span>
                       <span className="truncate">{info.label}</span>
                     </div>
-                    {isChecked && <Check className="h-3 w-3 text-cyan-400 shrink-0" />}
+                    {isChecked ? (
+                      <Eye className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+                    ) : (
+                      <EyeOff className="h-3.5 w-3.5 text-slate-500 shrink-0" />
+                    )}
                   </button>
                 );
               })}
