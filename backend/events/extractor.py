@@ -1,5 +1,5 @@
-"""
-StormTrace AI - Event Extraction & Bounding Box Extractor (SIH26078)
+﻿"""
+StormTrace AI - Event Extraction & Bounding Box Extractor 
 """
 import numpy as np
 from scipy import ndimage

@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 import json
 import numpy as np
@@ -20,7 +20,7 @@ from backend.historical_validation import HistoricalValidationEngine
 
 def run_reproducible_benchmark_suite():
     print("=" * 75)
-    print(" StormTrace AI - Reproducible Scientific Benchmark Suite (SIH26078) ")
+    print(" StormTrace AI - Reproducible Scientific Benchmark Suite  ")
     print("=" * 75)
     
     benchmark_report = {

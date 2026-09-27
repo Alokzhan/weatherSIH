@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 import json
 import csv
@@ -26,7 +26,7 @@ def run_scientific_benchmark_suite():
     """
     mode = os.getenv("STORMTRACE_MODE", "REAL")
     timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-    model_version = "v2.0.0-SIH26078"
+    model_version = "v2.0.0-"
 
     out_dir = os.path.join(PROJECT_ROOT, "outputs", "validation")
     os.makedirs(out_dir, exist_ok=True)
@@ -37,7 +37,7 @@ def run_scientific_benchmark_suite():
     records = []
 
     print("==========================================================================")
-    print(" StormTrace AI - Reproducible Scientific Benchmark Suite (SIH26078)")
+    print(" StormTrace AI - Reproducible Scientific Benchmark Suite ")
     print(f" Mode: {mode} | Timestamp: {timestamp}")
     print("==========================================================================")
 

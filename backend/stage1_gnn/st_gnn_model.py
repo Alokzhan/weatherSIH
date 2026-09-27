@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 
 # Ensure backend directory and project root are in sys.path
@@ -102,7 +102,7 @@ class TemporalAttentionTransformerBlock(nn.Module):
 
 class SpatioTemporalGNN(nn.Module):
     """
-    State-of-the-Art PyTorch Spatio-Temporal Graph Transformer (ST-GNN) for SIH26078.
+    State-of-the-Art PyTorch Spatio-Temporal Graph Transformer (ST-GNN) for .
     Fuses Multi-Head Spherical Graph Attention (GATv2) with Temporal Self-Attention Transformer.
     """
     def __init__(self, in_channels=6, hidden_channels=64, num_timesteps=9):

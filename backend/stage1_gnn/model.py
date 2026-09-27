@@ -1,5 +1,5 @@
-"""
-StormTrace AI - PyTorch Spherical ST-GNN Model (SIH26078)
+﻿"""
+StormTrace AI - PyTorch Spherical ST-GNN Model 
 Combines Multi-Head Graph Attention Network (GATv2) with Gated Recurrent Unit (GRU) / Temporal Transformer.
 """
 import torch

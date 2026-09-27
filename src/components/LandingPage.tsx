@@ -68,7 +68,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectLo
           <div className="lg:col-span-7 space-y-5">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 text-xs font-mono">
               <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
-              <span>SIH AI Decision-Support Platform • 5 km Grid Precision</span>
+              <span>AI-Powered Decision-Support Platform • 5 km Grid Precision</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">

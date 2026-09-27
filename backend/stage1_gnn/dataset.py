@@ -1,5 +1,5 @@
-"""
-StormTrace AI - PyTorch Dataset for Spherical ST-GNN Training (SIH26078)
+﻿"""
+StormTrace AI - PyTorch Dataset for Spherical ST-GNN Training 
 """
 import torch
 import numpy as np

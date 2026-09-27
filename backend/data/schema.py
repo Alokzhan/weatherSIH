@@ -1,5 +1,5 @@
-"""
-StormTrace AI - Canonical Meteorological Weather Tensor Schema (SIH26078)
+﻿"""
+StormTrace AI - Canonical Meteorological Weather Tensor Schema 
 Tensor Shape: [Ensemble, Time, Variable, Latitude, Longitude] -> [E, T, V, Y, X]
 """
 import numpy as np

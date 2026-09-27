@@ -1,5 +1,5 @@
-"""
-StormTrace AI - Training Script for PyTorch Spherical ST-GNN Model (SIH26078)
+﻿"""
+StormTrace AI - Training Script for PyTorch Spherical ST-GNN Model 
 Executes forward pass, loss computation, backward pass, and optimizer.step()
 """
 import os

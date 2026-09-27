@@ -100,7 +100,7 @@ export const Header: React.FC<HeaderProps> = ({
                 StormTrace
               </h1>
               <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-600/10 dark:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30 font-mono font-bold">
-                SIH Pan-India
+                Pan-India v2.0
               </span>
               <span className="text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-emerald-600/10 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>

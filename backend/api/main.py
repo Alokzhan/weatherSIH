@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 import math
 import random
@@ -104,7 +104,7 @@ except Exception:
 
 app = FastAPI(
     title="StormTrace AI - Real Backend Engine",
-    description="SIH-26078: Two-Stage Hybrid GNN + DDPM Extreme Weather Anomaly Tracking and 5km Downscaling API",
+    description=": Two-Stage Hybrid GNN + DDPM Extreme Weather Anomaly Tracking and 5km Downscaling API",
     version="2.0.0"
 )
 
@@ -645,7 +645,7 @@ def execute_inference(req: InferenceReq):
 
 
 # ==============================================================================
-# CANONICAL SIH26078 PRODUCTION PIPELINE & MISSING ENDPOINTS
+# CANONICAL  PRODUCTION PIPELINE & MISSING ENDPOINTS
 # ==============================================================================
 
 @app.get("/api/v1/anomalies")

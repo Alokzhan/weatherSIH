@@ -13,7 +13,7 @@ export const Footer: React.FC = React.memo(() => {
             <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">StormTrace AI</span>
           </div>
           <p className="text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
-            From coarse weather forecasts to precise, probability-based local disaster alerts. Built for Smart India Hackathon (SIH 2026).
+            From coarse weather forecasts to precise, probability-based local disaster alerts. Built for real-time disaster preparedness across India.
           </p>
           <div className="text-[11px] text-blue-600 dark:text-cyan-400 font-mono font-semibold">
             Pan-India Coverage • 5 km Grid Precision
@@ -49,7 +49,7 @@ export const Footer: React.FC = React.memo(() => {
         </div>
 
         <div>
-          <h4 className="font-semibold text-slate-800 dark:text-slate-200 mb-3">SIH Compliance Notice</h4>
+          <h4 className="font-semibold text-slate-800 dark:text-slate-200 mb-3">Operational Notice</h4>
           <p className="text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
             StormTrace AI is a decision-support system designed to complement official IMD / NCMRWF weather products. It does not replace official statutory warnings.
           </p>
@@ -65,7 +65,7 @@ export const Footer: React.FC = React.memo(() => {
 
       <div className="max-w-7xl mx-auto px-4 border-t border-slate-200 dark:border-[#141d32] pt-4 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 dark:text-slate-500">
         <div>
-          © 2026 StormTrace AI Project • Developed for SIH • Pan-India Disaster Management Intelligence
+          © 2026 StormTrace AI • Pan-India Disaster Management Intelligence
         </div>
         <div className="flex gap-4 mt-2 sm:mt-0">
           <span className="hover:text-slate-700 dark:hover:text-slate-300 cursor-pointer transition-colors">Architecture Spec</span>

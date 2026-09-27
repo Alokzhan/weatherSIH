@@ -1,5 +1,5 @@
-"""
-StormTrace AI - Inference Pipeline for PyTorch Spherical ST-GNN Model (SIH26078)
+﻿"""
+StormTrace AI - Inference Pipeline for PyTorch Spherical ST-GNN Model 
 """
 import os
 import sys

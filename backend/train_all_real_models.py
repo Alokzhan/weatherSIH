@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 import torch
 import numpy as np
@@ -14,7 +14,7 @@ from backend.stage2_diffusion.ddpm import train_ddpm_model
 
 def execute_full_real_training_pipeline(epochs_gnn=20, epochs_ddpm=20):
     print("=" * 80)
-    print(" StormTrace AI - Full Real-Dataset Model Training Pipeline (SIH26078) ")
+    print(" StormTrace AI - Full Real-Dataset Model Training Pipeline  ")
     print("=" * 80)
 
     # 1. Download & Prepare Real Weather Atmospheric Dataset

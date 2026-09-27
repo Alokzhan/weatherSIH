@@ -59,7 +59,7 @@ Preserved Peak Intensity Error: < 4.2%
 Grid Resolution: 5.0 km downscaled grid conditioned on DEM elevation & moisture flux
 
 ================================================================================
-Generated automatically by AstraWatch AI Decision-Support Platform for SIH 2026.
+Generated automatically by StormTrace AI Decision-Support Platform.
 Official Meteorological Warnings take precedence.
 ================================================================================
   `.trim();

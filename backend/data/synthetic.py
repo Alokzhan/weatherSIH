@@ -1,5 +1,5 @@
-"""
-StormTrace AI - Synthetic NWP Weather Tensor Generator (SIH26078)
+﻿"""
+StormTrace AI - Synthetic NWP Weather Tensor Generator 
 Produces canonical 5D weather tensors matching production schema:
 [ensemble, time, variable, latitude, longitude]
 """
