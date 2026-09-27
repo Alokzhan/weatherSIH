@@ -45,35 +45,50 @@ import hashlib
 load_dotenv()
 
 DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "stormtrace.db")
-os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+
+try:
+    data_dir = os.path.dirname(DB_PATH)
+    os.makedirs(data_dir, exist_ok=True)
+except Exception:
+    DB_PATH = "/tmp/stormtrace.db"
+    try:
+        os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    except Exception:
+        pass
 
 def init_db():
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id TEXT PRIMARY KEY,
-                full_name TEXT NOT NULL,
-                email TEXT UNIQUE NOT NULL,
-                password_hash TEXT NOT NULL,
-                organization TEXT NOT NULL,
-                role TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-        demo_users = [
-            ("USR-NDRF-904", "Cmdt. Rajesh Sharma", "rajesh.sharma@ndrf.gov.in", hashlib.sha256(b"ndrf123").hexdigest(), "NDRF 9th Battalion", "NDRF Disaster Operations Chief"),
-            ("USR-FAR-102", "Sardar Gurdeep Singh", "gurdeep.krishi@agri.in", hashlib.sha256(b"kisan123").hexdigest(), "Kisan Samiti & Crop Cell", "Progressive Farmer Representative"),
-            ("USR-PUB-501", "Ananya Roy", "ananya.roy@meteorology.org", hashlib.sha256(b"research123").hexdigest(), "Indian Institute of Tropical Meteorology", "Climate Researcher"),
-        ]
-        for u in demo_users:
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
             cursor.execute('''
-                INSERT OR IGNORE INTO users (id, full_name, email, password_hash, organization, role)
-                VALUES (?, ?, ?, ?, ?, ?)
-            ''', u)
-        conn.commit()
+                CREATE TABLE IF NOT EXISTS users (
+                    id TEXT PRIMARY KEY,
+                    full_name TEXT NOT NULL,
+                    email TEXT UNIQUE NOT NULL,
+                    password_hash TEXT NOT NULL,
+                    organization TEXT NOT NULL,
+                    role TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+            demo_users = [
+                ("USR-NDRF-904", "Cmdt. Rajesh Sharma", "rajesh.sharma@ndrf.gov.in", hashlib.sha256(b"ndrf123").hexdigest(), "NDRF 9th Battalion", "NDRF Disaster Operations Chief"),
+                ("USR-FAR-102", "Sardar Gurdeep Singh", "gurdeep.krishi@agri.in", hashlib.sha256(b"kisan123").hexdigest(), "Kisan Samiti & Crop Cell", "Progressive Farmer Representative"),
+                ("USR-PUB-501", "Ananya Roy", "ananya.roy@meteorology.org", hashlib.sha256(b"research123").hexdigest(), "Indian Institute of Tropical Meteorology", "Climate Researcher"),
+            ]
+            for u in demo_users:
+                cursor.execute('''
+                    INSERT OR IGNORE INTO users (id, full_name, email, password_hash, organization, role)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                ''', u)
+            conn.commit()
+    except Exception as _e:
+        print(f"Database initialization fallback: {_e}")
 
-init_db()
+try:
+    init_db()
+except Exception:
+    pass
 
 app = FastAPI(
     title="StormTrace AI - Real Backend Engine",

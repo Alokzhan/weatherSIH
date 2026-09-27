@@ -12,5 +12,6 @@ if BACKEND_DIR not in sys.path:
 
 from backend.api.main import app
 
-# Export ASGI handler for Vercel Serverless Python
+# Export ASGI app & handler for Vercel Serverless Python
+app = app
 handler = app
