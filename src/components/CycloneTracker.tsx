@@ -515,13 +515,13 @@ export const CycloneTracker: React.FC = () => {
         ? { maxZoom: 18, tileSize: 512, zoomOffset: -1, attribution: '© Mapbox © OpenStreetMap' }
         : { maxZoom: 18, attribution: '© OpenStreetMap contributors' };
     } else {
-      // Dark mode: Mapbox preferred → Stadia Maps dark as free fallback (no watermark, no API key)
+      // Dark mode: Mapbox preferred → ESRI Dark Gray Canvas as free fallback (100% free, no API key)
       tileUrl = hasMapbox
         ? `https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/{z}/{x}/{y}?access_token=${API_CONFIG.mapboxPublicToken}`
-        : 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
+        : 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
       tileOptions = hasMapbox
         ? { maxZoom: 18, tileSize: 512, zoomOffset: -1, attribution: '© Mapbox © OpenStreetMap' }
-        : { maxZoom: 20, attribution: '© Stadia Maps © OpenStreetMap contributors' };
+        : { maxZoom: 16, attribution: '© Esri © OpenStreetMap contributors' };
     }
 
     L.tileLayer(tileUrl, tileOptions).addTo(map);
