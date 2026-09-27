@@ -200,6 +200,59 @@ const PAN_INDIA_RAINFALL_FEATURES = [
   }
 ];
 
+const FREE_DARK_STYLE: mapboxgl.Style = {
+  version: 8,
+  sources: {
+    'esri-dark': {
+      type: 'raster',
+      tiles: [
+        'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+      ],
+      tileSize: 256,
+      attribution: '© Esri © OpenStreetMap contributors'
+    }
+  },
+  layers: [
+    {
+      id: 'esri-dark-base',
+      type: 'raster',
+      source: 'esri-dark',
+      minzoom: 0,
+      maxzoom: 18
+    }
+  ]
+};
+
+const FREE_SATELLITE_STYLE: mapboxgl.Style = {
+  version: 8,
+  sources: {
+    'esri-satellite': {
+      type: 'raster',
+      tiles: [
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+      ],
+      tileSize: 256,
+      attribution: '© Esri © OpenStreetMap contributors'
+    }
+  },
+  layers: [
+    {
+      id: 'esri-satellite-base',
+      type: 'raster',
+      source: 'esri-satellite',
+      minzoom: 0,
+      maxzoom: 18
+    }
+  ]
+};
+
+function getMapStyleSpec(styleType: 'dark' | 'satellite'): string | mapboxgl.Style {
+  if (API_CONFIG.mapboxPublicToken) {
+    return styleType === 'dark' ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/satellite-streets-v12';
+  }
+  return styleType === 'dark' ? FREE_DARK_STYLE : FREE_SATELLITE_STYLE;
+}
+
 export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all', onSelectThreat }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -254,10 +307,7 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
     const nextStyle = mapStyle === 'dark' ? 'satellite' : 'dark';
     setMapStyle(nextStyle);
     if (mapRef.current) {
-      const styleUrl = API_CONFIG.mapboxPublicToken
-        ? (nextStyle === 'dark' ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/satellite-streets-v12')
-        : 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
-      mapRef.current.setStyle(styleUrl);
+      mapRef.current.setStyle(getMapStyleSpec(nextStyle));
     }
   }, [mapStyle]);
 
@@ -283,18 +333,13 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    // Graceful Mapbox GL Access Token setup
-    const token = API_CONFIG.mapboxPublicToken || 'your_mapbox_public_token_here';
+    // Graceful Mapbox GL Access Token setup (fallback token if empty)
+    const token = API_CONFIG.mapboxPublicToken || 'pk.mapbox_public_token_placeholder';
     mapboxgl.accessToken = token;
-
-    // Use Carto GL dark style if mapbox token is absent or demo mode
-    const styleUrl = API_CONFIG.mapboxPublicToken
-      ? (mapStyle === 'dark' ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/satellite-streets-v12')
-      : 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 
     const map = new mapboxgl.Map({
       container: mapContainerRef.current!,
-      style: styleUrl,
+      style: getMapStyleSpec(mapStyle),
       center: [78.9629, 22.5937], // Center on India
       zoom: 4.8,
       pitch: is3DEnabled ? 40 : 0,
