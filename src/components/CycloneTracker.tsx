@@ -515,13 +515,13 @@ export const CycloneTracker: React.FC = () => {
         ? { maxZoom: 18, tileSize: 512, zoomOffset: -1, attribution: '© Mapbox © OpenStreetMap' }
         : { maxZoom: 18, attribution: '© OpenStreetMap contributors' };
     } else {
-      // Dark mode: Mapbox preferred → ESRI Dark Gray Canvas as free fallback (100% free, no API key)
+      // Dark mode: Mapbox preferred → CartoDB Dark Matter raster PNG as free fallback (100% free, no API key)
       tileUrl = hasMapbox
         ? `https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/{z}/{x}/{y}?access_token=${API_CONFIG.mapboxPublicToken}`
-        : 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+        : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
       tileOptions = hasMapbox
         ? { maxZoom: 18, tileSize: 512, zoomOffset: -1, attribution: '© Mapbox © OpenStreetMap' }
-        : { maxZoom: 16, attribution: '© Esri © OpenStreetMap contributors' };
+        : { maxZoom: 19, subdomains: 'abcd', attribution: '© OpenStreetMap contributors © CARTO' };
     }
 
     L.tileLayer(tileUrl, tileOptions).addTo(map);

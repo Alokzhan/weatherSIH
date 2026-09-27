@@ -203,22 +203,25 @@ const PAN_INDIA_RAINFALL_FEATURES = [
 const FREE_DARK_STYLE: mapboxgl.Style = {
   version: 8,
   sources: {
-    'esri-dark': {
+    'carto-dark': {
       type: 'raster',
       tiles: [
-        'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+        'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+        'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+        'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+        'https://d.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
       ],
       tileSize: 256,
-      attribution: '© Esri © OpenStreetMap contributors'
+      attribution: '© OpenStreetMap contributors © CARTO'
     }
   },
   layers: [
     {
-      id: 'esri-dark-base',
+      id: 'carto-dark-base',
       type: 'raster',
-      source: 'esri-dark',
+      source: 'carto-dark',
       minzoom: 0,
-      maxzoom: 18
+      maxzoom: 19
     }
   ]
 };
@@ -344,7 +347,7 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
       zoom: 4.8,
       pitch: is3DEnabled ? 40 : 0,
       bearing: is3DEnabled ? -10 : 0,
-      projection: 'globe',
+      projection: (API_CONFIG.mapboxPublicToken ? 'globe' : 'mercator') as any,
       antialias: true,
       maxZoom: 18,
       minZoom: 3,
