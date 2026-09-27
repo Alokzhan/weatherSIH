@@ -77,14 +77,27 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
   return (
     <header className="h-14 bg-white/95 dark:bg-[#0a0f1e]/95 backdrop-blur-xl border-b border-slate-200 dark:border-[#141d32] px-2.5 sm:px-4 flex items-center justify-between gap-2 md:gap-4 sticky top-0 z-30 transition-colors">
       
-      {/* Mobile Menu Toggle */}
-      <button 
-        onClick={onMobileMenuToggle}
-        className="md:hidden p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-[#1e2d48] transition-colors shrink-0"
-        aria-label="Open Mobile Menu"
-      >
-        <Menu className="h-5 w-5" />
-      </button>
+      <div className="flex items-center gap-2 shrink-0">
+        {/* Mobile Menu Toggle */}
+        <button 
+          onClick={onMobileMenuToggle}
+          className="md:hidden p-2 min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-[#1e2d48] transition-colors shrink-0"
+          aria-label="Open Mobile Menu"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+
+        {/* Touch-Friendly Quick Feature Pills (Desktop/Tablet) */}
+        <div className="hidden sm:flex items-center gap-1.5 py-1">
+          <button
+            onClick={() => onNavigateToTab && onNavigateToTab('cyclone')}
+            className="px-2.5 py-1.5 min-h-[36px] rounded-xl bg-gradient-to-r from-red-600 to-amber-600 text-white font-black text-[11px] flex items-center gap-1 shadow-md hover:scale-105 transition shrink-0"
+          >
+            <span className="animate-spin text-xs" style={{ animationDuration: '4s' }}>🌀</span>
+            <span>Cyclone</span>
+          </button>
+        </div>
+      </div>
 
       {/* Search Input */}
       <form onSubmit={handleSearch} className="flex-1 max-w-sm relative hidden md:block">
@@ -99,17 +112,6 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
           className="w-full bg-slate-50 dark:bg-[#111827] border border-slate-200 dark:border-[#1e2d48] rounded-xl pl-9 pr-4 py-1.5 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 dark:focus:ring-blue-500/10 transition-all"
         />
       </form>
-
-      {/* Touch-Friendly Quick Feature Pills */}
-      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
-        <button
-          onClick={() => onNavigateToTab && onNavigateToTab('cyclone')}
-          className="px-2.5 py-1.5 min-h-[36px] rounded-xl bg-gradient-to-r from-red-600 to-amber-600 text-white font-black text-[11px] flex items-center gap-1 shadow-md hover:scale-105 transition shrink-0"
-        >
-          <span className="animate-spin text-xs" style={{ animationDuration: '4s' }}>🌀</span>
-          <span>Cyclone</span>
-        </button>
-      </div>
 
       {/* Right Controls */}
       <div className="flex items-center gap-1 sm:gap-2 shrink-0">

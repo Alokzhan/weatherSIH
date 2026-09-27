@@ -247,7 +247,7 @@ export function App() {
           className={`flex-1 min-h-0 ${
             activeTab === 'map' || activeTab === 'cyclone' || activeTab === 'cyclone-tracker' || activeTab === 'windy' 
               ? 'p-0 overflow-hidden flex flex-col h-full w-full max-w-none' 
-              : 'overflow-y-auto px-4 sm:px-6 py-6 max-w-7xl w-full mx-auto'
+              : 'overflow-y-auto px-3 sm:px-6 pt-4 sm:pt-6 pb-20 sm:pb-12 max-w-7xl w-full mx-auto'
           }`}
         >
           <ErrorBoundary key={activeTab}>

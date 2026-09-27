@@ -356,19 +356,20 @@ export const WeatherChatbot: React.FC<WeatherChatbotProps> = ({ onNavigateToTab 
   };
 
   return (
-    <div className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-50 flex flex-col items-end">
+    <div className="fixed bottom-4 right-4 sm:bottom-5 sm:right-5 z-40 flex flex-col items-end">
       {/* Floating Toggle Button */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="group relative flex items-center gap-2 px-3 py-2.5 sm:px-4 sm:py-3 rounded-2xl bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white shadow-2xl shadow-cyan-500/40 transition-all duration-300 transform hover:scale-105"
+          className="group relative flex items-center justify-center gap-2 h-11 w-11 sm:h-auto sm:w-auto sm:px-4 sm:py-3 rounded-full sm:rounded-2xl bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white shadow-2xl shadow-cyan-500/40 transition-all duration-300 transform hover:scale-105"
+          title="Ask StormTrace AI"
         >
-          <span className="relative flex h-3 w-3">
+          <span className="relative flex h-2.5 w-2.5 sm:h-3 sm:w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-300 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-400"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-cyan-400"></span>
           </span>
-          <Bot className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-          <span className="text-[11px] sm:text-xs font-bold font-sans tracking-wide">Ask StormTrace AI</span>
+          <Bot className="h-5 w-5 text-white shrink-0" />
+          <span className="hidden sm:inline text-xs font-bold font-sans tracking-wide">Ask StormTrace AI</span>
         </button>
       )}
 
