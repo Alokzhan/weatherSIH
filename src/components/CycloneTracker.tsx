@@ -1226,38 +1226,100 @@ export const CycloneTracker: React.FC = () => {
             </div>
           )}
 
-          {/* Navigation Tabs (For Cyclone / Archive modes) */}
-          {trackingMode !== 'live_wind' && (
-          <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-bold">
-            <button
-              onClick={() => setSelectedTab('overview')}
-              className={`flex-1 py-2 rounded-lg transition ${
-                selectedTab === 'overview' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              Overview & Risk
-            </button>
-            <button
-              onClick={() => setSelectedTab('models')}
-              className={`flex-1 py-2 rounded-lg transition ${
-                selectedTab === 'models' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              Multi-Model
-            </button>
-            <button
-              onClick={() => setSelectedTab('districts')}
-              className={`flex-1 py-2 rounded-lg transition ${
-                selectedTab === 'districts' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              Districts ({cyclone.affectedDistricts.length})
-            </button>
-          </div>
+          {/* Live Telemetry View when in Live Cyclone mode with no active system */}
+          {trackingMode === 'live_cyclone' && !hasActiveCyclone && liveWindStatus && (
+            <div className="space-y-3">
+              <div className="p-3 bg-gradient-to-br from-emerald-950/80 to-slate-900 border border-emerald-500/40 rounded-xl space-y-2 shadow-lg">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400" /> Live Indian Basin Telemetry
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-emerald-600 text-white font-mono text-[9px] font-bold">
+                    LIVE METEO
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Real-time surface telemetry & satellite sensors report <strong>no active tropical cyclone system</strong> exceeding 34kt threshold in Bay of Bengal / Arabian Sea.
+                </p>
+                <div className="grid grid-cols-2 gap-2 text-xs pt-1.5 border-t border-emerald-900/50">
+                  <div className="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                    <span className="text-slate-400 text-[10px] block">Peak Coastal Wind:</span>
+                    <p className="font-black text-amber-300 text-sm">{liveWindStatus.maxWindSpeedKmH} km/h</p>
+                    <span className="text-[9px] text-slate-400">({liveWindStatus.maxWindSpeedKt} kt)</span>
+                  </div>
+                  <div className="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                    <span className="text-slate-400 text-[10px] block">Min Surface Pressure:</span>
+                    <p className="font-black text-cyan-300 text-sm">{liveWindStatus.minPressureHpa} hPa</p>
+                    <span className="text-[9px] text-slate-400">Normal Range</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider px-1 flex items-center justify-between">
+                  <span>Live Telemetry Stations ({liveWindStatus.spots.length})</span>
+                  <button onClick={refreshLiveWindStatus} className="text-cyan-400 hover:text-cyan-300 transition flex items-center gap-1 text-[10px]" title="Refresh telemetry">
+                    <RefreshCw className={`h-3 w-3 ${isLoadingLiveWind ? 'animate-spin' : ''}`} /> Refresh
+                  </button>
+                </div>
+
+                {liveWindStatus.spots.map((spot) => (
+                  <div
+                    key={spot.id}
+                    onClick={() => {
+                      setSelectedWindSpot(spot);
+                      if (mapRef.current) {
+                        mapRef.current.panTo([spot.lat, spot.lng], { animate: true });
+                      }
+                    }}
+                    className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/50 transition cursor-pointer flex items-center justify-between"
+                  >
+                    <div>
+                      <p className="text-xs font-black text-white">{spot.locationName}</p>
+                      <p className="text-[10px] text-slate-400">{spot.directionStr} ({spot.directionDeg}°) • Gust: {spot.gustKmH} km/h</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs font-black text-cyan-300">{spot.windKmH} km/h</p>
+                      <p className="text-[10px] font-mono text-slate-400">{spot.pressureHpa} hPa</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Navigation Tabs (Only when hasActiveCyclone is true) */}
+          {hasActiveCyclone && (
+            <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-bold">
+              <button
+                onClick={() => setSelectedTab('overview')}
+                className={`flex-1 py-2 rounded-lg transition ${
+                  selectedTab === 'overview' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Overview & Risk
+              </button>
+              <button
+                onClick={() => setSelectedTab('models')}
+                className={`flex-1 py-2 rounded-lg transition ${
+                  selectedTab === 'models' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Multi-Model
+              </button>
+              <button
+                onClick={() => setSelectedTab('districts')}
+                className={`flex-1 py-2 rounded-lg transition ${
+                  selectedTab === 'districts' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Districts ({cyclone.affectedDistricts.length})
+              </button>
+            </div>
           )}
 
           {/* TAB 1: OVERVIEW & LANDFALL WARNING */}
-          {selectedTab === 'overview' && (
+          {hasActiveCyclone && selectedTab === 'overview' && (
             <div className="space-y-4">
               
               {/* Landfall Warning Card */}
@@ -1325,7 +1387,7 @@ export const CycloneTracker: React.FC = () => {
           )}
 
           {/* TAB 2: MULTI-MODEL FORECAST COMPARISON */}
-          {selectedTab === 'models' && (
+          {hasActiveCyclone && selectedTab === 'models' && (
             <div className="space-y-3">
               <div className="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs text-slate-300">
                 <p className="font-semibold text-blue-400 mb-1 flex items-center gap-1">
@@ -1367,7 +1429,7 @@ export const CycloneTracker: React.FC = () => {
           )}
 
           {/* TAB 3: VULNERABLE DISTRICTS ALERT LIST */}
-          {selectedTab === 'districts' && (
+          {hasActiveCyclone && selectedTab === 'districts' && (
             <div className="space-y-2.5">
               <div className="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">
                 Affected Coastal Zones
