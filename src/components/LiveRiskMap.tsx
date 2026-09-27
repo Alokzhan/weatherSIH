@@ -287,14 +287,14 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
   const popupsRef = useRef<mapboxgl.Popup[]>([]);
 
   const [activeLayers, setActiveLayers] = useState<Record<MapLayerId, boolean>>({
-    rainfall_forecast: true,
-    rainfall_anomaly: true,
-    extreme_probability: true,
-    threat_footprint: true,
-    trajectory: true,
-    risk_grid_5km: true,
+    rainfall_forecast: false,
+    rainfall_anomaly: false,
+    extreme_probability: false,
+    threat_footprint: false,
+    trajectory: false,
+    risk_grid_5km: false,
     admin_boundaries: true,
-    vulnerability: true,
+    vulnerability: false,
     wind_extremes: false,
   });
 
@@ -307,8 +307,8 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
   const [selectedCell, setSelectedCell] = useState<GridCell5km | null>(null);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [is3DEnabled, setIs3DEnabled] = useState<boolean>(true);
-  const [showLayerPanel, setShowLayerPanel] = useState<boolean>(true);
-  const [showCellPanel, setShowCellPanel] = useState<boolean>(true);
+  const [showLayerPanel, setShowLayerPanel] = useState<boolean>(false);
+  const [showCellPanel, setShowCellPanel] = useState<boolean>(false);
   const [threatObjects, setThreatObjects] = useState<ThreatObject[]>([]);
   const [mapStyle, setMapStyle] = useState<'dark' | 'satellite'>('dark');
 
@@ -321,9 +321,6 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
       if (isMounted) {
         setThreatObjects(threats);
         setRiskGrid(grid);
-        if (grid.length > 0) {
-          setSelectedCell(grid[0]);
-        }
       }
     });
     return () => { isMounted = false; };
