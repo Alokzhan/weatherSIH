@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
   Play, 
   Pause, 
@@ -11,11 +11,14 @@ import {
   Sparkles,
   TrendingUp,
   Eye,
-  EyeOff
+  EyeOff,
+  RefreshCw,
+  CheckCircle2
 } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { API_CONFIG } from '../config/apiConfig';
+import { fetchLiveWindSquallsAndCycloneStatus, type LiveCycloneSystemStatus, type LiveWindSpot } from '../utils/panIndiaWeatherEngine';
 
 // Fix Leaflet default icon issues in React
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -426,6 +429,29 @@ export const CycloneTracker: React.FC = () => {
   const [langMode, setLangMode] = useState<'hinglish' | 'english'>('hinglish');
   const [selectedTab, setSelectedTab] = useState<'overview' | 'models' | 'districts'>('overview');
 
+  // Live Wind & Active Cyclone Tracking States
+  const [trackingMode, setTrackingMode] = useState<'live_cyclone' | 'live_wind' | 'historical_archive'>('live_cyclone');
+  const [liveWindStatus, setLiveWindStatus] = useState<LiveCycloneSystemStatus | null>(null);
+  const [isLoadingLiveWind, setIsLoadingLiveWind] = useState<boolean>(true);
+  const [selectedWindSpot, setSelectedWindSpot] = useState<LiveWindSpot | null>(null);
+
+  const refreshLiveWindStatus = useCallback(() => {
+    setIsLoadingLiveWind(true);
+    fetchLiveWindSquallsAndCycloneStatus().then((status) => {
+      setLiveWindStatus(status);
+      setIsLoadingLiveWind(false);
+      if (status.spots.length > 0) {
+        setSelectedWindSpot(status.spots[0]);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    refreshLiveWindStatus();
+    const interval = setInterval(refreshLiveWindStatus, 300000); // Auto-refresh every 5 mins
+    return () => clearInterval(interval);
+  }, [refreshLiveWindStatus]);
+
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const markersGroupRef = useRef<L.LayerGroup | null>(null);
@@ -486,13 +512,53 @@ export const CycloneTracker: React.FC = () => {
     }).addTo(map);
   }, [tileMode]);
 
-  // ─── RENDER CYCLONE TRACK, CONE, & MARKERS ───
+  // ─── RENDER CYCLONE TRACK, LIVE WIND SQUALLS & MARKERS ───
   useEffect(() => {
     const map = mapRef.current;
     const group = markersGroupRef.current;
     if (!map || !group) return;
 
     group.clearLayers();
+
+    // ─── MODE: LIVE HIGH WIND SQUALL TRACKING ───
+    if (trackingMode === 'live_wind' && liveWindStatus?.spots) {
+      liveWindStatus.spots.forEach((spot) => {
+        const isSelected = selectedWindSpot?.id === spot.id;
+        const isSquall = spot.windKmH >= 45;
+        const isHigh = spot.windKmH >= 25;
+
+        const spotHtml = `
+          <div class="relative flex flex-col items-center cursor-pointer group">
+            <div class="h-6 w-6 rounded-full ${isSquall ? 'bg-red-600 animate-bounce ring-4 ring-red-500/40' : isHigh ? 'bg-amber-500 ring-2 ring-amber-400/30' : 'bg-cyan-600'} border border-white flex items-center justify-center text-[10px] font-black text-white shadow-lg">
+              🚩
+            </div>
+            <div class="mt-1 ${isSelected ? 'bg-amber-400 text-slate-950 font-black scale-110' : 'bg-slate-900/95 text-cyan-300 font-bold'} text-[9px] px-1.5 py-0.5 rounded border border-slate-700 whitespace-nowrap shadow-md flex items-center gap-1">
+              <span>${spot.windKmH} km/h</span>
+              <span class="text-[8px] text-slate-400">(${spot.directionStr})</span>
+            </div>
+          </div>
+        `;
+
+        const divIcon = L.divIcon({
+          className: 'live-wind-node-icon',
+          html: spotHtml,
+          iconSize: [28, 28],
+          iconAnchor: [14, 14],
+        });
+
+        const marker = L.marker([spot.lat, spot.lng], { icon: divIcon });
+        marker.on('click', () => {
+          setSelectedWindSpot(spot);
+          if (mapRef.current) {
+            mapRef.current.panTo([spot.lat, spot.lng], { animate: true });
+          }
+        });
+
+        group.addLayer(marker);
+      });
+
+      return; // Stop here when in live wind mode
+    }
 
     // 1. Render Cone of Uncertainty Polygon
     if (showCone && cyclone.coneCoords.length > 0) {
@@ -721,8 +787,41 @@ export const CycloneTracker: React.FC = () => {
           </div>
         </div>
 
-        {/* Action Controls & Cyclone Switcher */}
-        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+        {/* Action Controls & Tracking Mode Switcher */}
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0 flex-wrap sm:flex-nowrap">
+          {/* Tracking Mode Switcher */}
+          <div className="flex bg-slate-900 p-0.5 rounded-lg border border-slate-800 text-[10px] sm:text-xs font-bold shrink-0">
+            <button
+              onClick={() => setTrackingMode('live_cyclone')}
+              className={`px-2 py-0.5 rounded-md transition flex items-center gap-1 ${
+                trackingMode === 'live_cyclone' ? 'bg-red-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'
+              }`}
+              title="Check live active cyclone status"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-red-400 animate-ping" />
+              <span>Live Cyclone Check</span>
+            </button>
+            <button
+              onClick={() => setTrackingMode('live_wind')}
+              className={`px-2 py-0.5 rounded-md transition flex items-center gap-1 ${
+                trackingMode === 'live_wind' ? 'bg-cyan-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'
+              }`}
+              title="Track live high-wind squall zones across India"
+            >
+              <Wind className="h-3.5 w-3.5 text-cyan-300" />
+              <span>Live Wind Squalls</span>
+            </button>
+            <button
+              onClick={() => setTrackingMode('historical_archive')}
+              className={`px-2 py-0.5 rounded-md transition flex items-center gap-1 ${
+                trackingMode === 'historical_archive' ? 'bg-amber-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'
+              }`}
+              title="Replay historical cyclone case study tracks"
+            >
+              <span>📜 Replay Archive</span>
+            </button>
+          </div>
+
           {/* Mobile Stats Toggle Button */}
           <button
             onClick={() => setShowMobileStats(!showMobileStats)}
@@ -741,19 +840,6 @@ export const CycloneTracker: React.FC = () => {
             <span className="sm:hidden">{langMode === 'hinglish' ? 'HI' : 'EN'}</span>
           </button>
 
-          {/* Cyclone Dropdown Selector */}
-          <select
-            value={selectedCycloneId}
-            onChange={(e) => {
-              setSelectedCycloneId(e.target.value);
-              setActivePointIndex(2);
-            }}
-            className="bg-slate-900 border border-red-500/40 text-red-300 text-[10px] sm:text-xs font-bold py-0.5 sm:py-1 px-1.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500 max-w-[120px] sm:max-w-none"
-          >
-            <option value="remal-2026">🌀 Remal (BOB)</option>
-            <option value="biparjoy-2026">🌀 Biparjoy (ARB)</option>
-          </select>
-
           {/* Map Layer Mode Switcher */}
           <div className="hidden sm:flex bg-slate-900 p-0.5 rounded-lg border border-slate-800 text-xs">
             <button
@@ -769,6 +855,19 @@ export const CycloneTracker: React.FC = () => {
               Sat
             </button>
           </div>
+
+          {/* Cyclone Dropdown Selector */}
+          <select
+            value={selectedCycloneId}
+            onChange={(e) => {
+              setSelectedCycloneId(e.target.value);
+              setActivePointIndex(2);
+            }}
+            className="bg-slate-900 border border-red-500/40 text-red-300 text-[10px] sm:text-xs font-bold py-0.5 sm:py-1 px-1.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500 max-w-[120px] sm:max-w-none"
+          >
+            <option value="remal-2026">🌀 Remal (BOB)</option>
+            <option value="biparjoy-2026">🌀 Biparjoy (ARB)</option>
+          </select>
         </div>
       </header>
 
@@ -778,6 +877,34 @@ export const CycloneTracker: React.FC = () => {
         {/* MAP CONTAINER */}
         <div className="flex-1 relative h-full w-full min-h-[350px] sm:min-h-[400px] lg:min-h-[420px]">
           <div ref={mapContainerRef} className="absolute inset-0 z-10 w-full h-full bg-[#070b16]" />
+
+          {/* Live Active Cyclone Check Notice Banner */}
+          {trackingMode === 'live_cyclone' && liveWindStatus && !liveWindStatus.hasActiveCyclone && (
+            <div className="absolute top-12 sm:top-14 left-1/2 -translate-x-1/2 z-30 w-[calc(100vw-2rem)] max-w-md bg-slate-900/95 backdrop-blur-xl border border-amber-500/50 p-3 sm:p-4 rounded-2xl shadow-2xl space-y-2.5 text-center">
+              <div className="flex items-center justify-center gap-2 text-amber-400 font-black text-xs sm:text-sm uppercase tracking-wider">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                <span>NO ACTIVE CYCLONE AT PRESENT</span>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Real-time IMD & Open-Meteo telemetry detects <strong>no active tropical cyclone system</strong> currently exceeding 34kt (62 km/h) in the Indian Ocean / BOB basin.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                <button
+                  onClick={() => setTrackingMode('live_wind')}
+                  className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5"
+                >
+                  <Wind className="h-3.5 w-3.5" />
+                  Track Live High-Wind Squalls ({liveWindStatus.highWindSpotsCount} Monitored Zones)
+                </button>
+                <button
+                  onClick={() => setTrackingMode('historical_archive')}
+                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-xs transition flex items-center gap-1.5"
+                >
+                  📜 Replay Historical Case Study
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Floating Left Top: Model Toggles Bar with Eye Buttons & Mobile Auto-Scroll */}
           <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-20 bg-slate-900/90 backdrop-blur-md p-1 sm:p-1.5 rounded-xl border border-slate-800/80 shadow-2xl flex items-center gap-1 max-w-[calc(100vw-1.5rem)] overflow-x-auto whitespace-nowrap scrollbar-none">
@@ -947,7 +1074,90 @@ export const CycloneTracker: React.FC = () => {
         {/* ── RIGHT SIDEBAR IMPACT & DISASTER ADVISORY PANEL ── */}
         <div className="w-full lg:w-96 bg-[#080d1a] border-l border-[#1a233a] p-4 flex flex-col gap-4 overflow-y-auto max-h-[500px] lg:max-h-none z-20">
           
-          {/* Navigation Tabs */}
+          {/* ── LIVE HIGH WIND SQUALL TRACKING SIDEBAR VIEW ── */}
+          {trackingMode === 'live_wind' && liveWindStatus && (
+            <div className="space-y-3">
+              <div className="p-3 bg-gradient-to-br from-cyan-950/80 to-slate-900 border border-cyan-500/40 rounded-xl space-y-1.5 shadow-lg">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black text-cyan-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <Wind className="h-4 w-4" /> Live High-Wind Squall Telemetry
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-cyan-600 text-white font-mono text-[9px] font-bold">
+                    LIVE METEO
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300">
+                  Monitoring <strong>{liveWindStatus.spots.length} coastal & marine zones</strong> across India for wind squalls, gale gusts, and atmospheric pressure dips.
+                </p>
+                <div className="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-cyan-900/50">
+                  <div>
+                    <span className="text-slate-400 text-[10px]">Peak Wind Velocity:</span>
+                    <p className="font-black text-amber-300">{liveWindStatus.maxWindSpeedKmH} km/h ({liveWindStatus.maxWindSpeedKt} kt)</p>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 text-[10px]">Lowest Surface Pressure:</span>
+                    <p className="font-black text-cyan-300">{liveWindStatus.minPressureHpa} hPa</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider px-1 flex items-center justify-between">
+                  <span>Monitored Wind Hotspots ({liveWindStatus.spots.length})</span>
+                  <button onClick={refreshLiveWindStatus} className="text-cyan-400 hover:text-cyan-300 transition flex items-center gap-1 text-[10px]" title="Refresh live telemetry">
+                    <RefreshCw className={`h-3 w-3 ${isLoadingLiveWind ? 'animate-spin' : ''}`} /> Refresh
+                  </button>
+                </div>
+
+                {liveWindStatus.spots.map((spot) => {
+                  const isSelected = selectedWindSpot?.id === spot.id;
+                  return (
+                    <div
+                      key={spot.id}
+                      onClick={() => {
+                        setSelectedWindSpot(spot);
+                        if (mapRef.current) {
+                          mapRef.current.panTo([spot.lat, spot.lng], { animate: true });
+                        }
+                      }}
+                      className={`p-3 rounded-xl border transition cursor-pointer space-y-1 ${
+                        isSelected
+                          ? 'bg-cyan-950/70 border-cyan-400 text-white shadow-lg ring-1 ring-cyan-500/50'
+                          : 'bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black text-white">{spot.locationName}</span>
+                        <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase ${
+                          spot.isGaleOrSquall ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                          spot.isHighWind ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-400'
+                        }`}>
+                          {spot.isGaleOrSquall ? 'Gale Squall' : spot.isHighWind ? 'Moderate Squall' : 'Standard'}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-1 text-[10px] pt-1">
+                        <div>
+                          <span className="text-slate-400 block text-[9px]">Speed</span>
+                          <strong className="text-cyan-300">{spot.windKmH} km/h</strong>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[9px]">Peak Gust</span>
+                          <strong className="text-amber-300">{spot.gustKmH} km/h</strong>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[9px]">Vector</span>
+                          <strong className="text-slate-200">{spot.directionStr} ({spot.directionDeg}°)</strong>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Navigation Tabs (For Cyclone / Archive modes) */}
+          {trackingMode !== 'live_wind' && (
           <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-bold">
             <button
               onClick={() => setSelectedTab('overview')}
@@ -974,6 +1184,7 @@ export const CycloneTracker: React.FC = () => {
               Districts ({cyclone.affectedDistricts.length})
             </button>
           </div>
+          )}
 
           {/* TAB 1: OVERVIEW & LANDFALL WARNING */}
           {selectedTab === 'overview' && (
