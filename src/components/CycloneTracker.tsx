@@ -504,7 +504,7 @@ export const CycloneTracker: React.FC = () => {
     let tileOptions: L.TileLayerOptions;
 
     if (tileMode === 'satellite') {
-      // ESRI World Imagery — free, no token required
+      // ESRI World Imagery — completely free, no API key needed
       tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
       tileOptions = { maxZoom: 18, attribution: '© Esri © OpenStreetMap contributors' };
     } else if (tileMode === 'street') {
@@ -515,13 +515,13 @@ export const CycloneTracker: React.FC = () => {
         ? { maxZoom: 18, tileSize: 512, zoomOffset: -1, attribution: '© Mapbox © OpenStreetMap' }
         : { maxZoom: 18, attribution: '© OpenStreetMap contributors' };
     } else {
-      // Dark mode: Mapbox preferred, CartoDB dark as free fallback
+      // Dark mode: Mapbox preferred → Stadia Maps dark as free fallback (no watermark, no API key)
       tileUrl = hasMapbox
         ? `https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/{z}/{x}/{y}?access_token=${API_CONFIG.mapboxPublicToken}`
-        : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+        : 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
       tileOptions = hasMapbox
         ? { maxZoom: 18, tileSize: 512, zoomOffset: -1, attribution: '© Mapbox © OpenStreetMap' }
-        : { maxZoom: 19, attribution: '© OpenStreetMap © CARTO', subdomains: 'abcd' };
+        : { maxZoom: 20, attribution: '© Stadia Maps © OpenStreetMap contributors' };
     }
 
     L.tileLayer(tileUrl, tileOptions).addTo(map);
