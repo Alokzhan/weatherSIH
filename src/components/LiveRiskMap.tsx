@@ -364,6 +364,19 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
       unit: 'metric',
     }), 'bottom-left');
 
+    map.on('error', (e: any) => {
+      const msg = e?.error?.message || e?.message || String(e || '');
+      const status = e?.error?.status;
+      if (status === 401 || status === 403 || msg.includes('access token') || msg.includes('Unauthorized') || msg.includes('invalid Mapbox')) {
+        console.warn('Mapbox token error encountered, automatically switching to free CartoDB dark basemap style.');
+        try {
+          map.setStyle(FREE_DARK_STYLE);
+        } catch (err) {
+          console.error('Failed to set fallback style:', err);
+        }
+      }
+    });
+
     map.on('load', () => {
       map.resize();
       setTimeout(() => map.resize(), 200);
