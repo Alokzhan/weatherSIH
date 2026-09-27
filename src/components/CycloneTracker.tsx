@@ -498,19 +498,33 @@ export const CycloneTracker: React.FC = () => {
       }
     });
 
-    let tileUrl = `https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/{z}/{x}/{y}?access_token=${API_CONFIG.mapboxPublicToken}`;
+    const hasMapbox = !!API_CONFIG.mapboxPublicToken;
+
+    let tileUrl: string;
+    let tileOptions: L.TileLayerOptions;
+
     if (tileMode === 'satellite') {
-      tileUrl = `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=${API_CONFIG.mapboxPublicToken}`;
+      // ESRI World Imagery — free, no token required
+      tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+      tileOptions = { maxZoom: 18, attribution: '© Esri © OpenStreetMap contributors' };
     } else if (tileMode === 'street') {
-      tileUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=${API_CONFIG.mapboxPublicToken}`;
+      tileUrl = hasMapbox
+        ? `https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=${API_CONFIG.mapboxPublicToken}`
+        : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      tileOptions = hasMapbox
+        ? { maxZoom: 18, tileSize: 512, zoomOffset: -1, attribution: '© Mapbox © OpenStreetMap' }
+        : { maxZoom: 18, attribution: '© OpenStreetMap contributors' };
+    } else {
+      // Dark mode: Mapbox preferred, CartoDB dark as free fallback
+      tileUrl = hasMapbox
+        ? `https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/{z}/{x}/{y}?access_token=${API_CONFIG.mapboxPublicToken}`
+        : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+      tileOptions = hasMapbox
+        ? { maxZoom: 18, tileSize: 512, zoomOffset: -1, attribution: '© Mapbox © OpenStreetMap' }
+        : { maxZoom: 19, attribution: '© OpenStreetMap © CARTO', subdomains: 'abcd' };
     }
 
-    L.tileLayer(tileUrl, {
-      maxZoom: 18,
-      tileSize: 512,
-      zoomOffset: -1,
-      attribution: '© Mapbox © OpenStreetMap',
-    }).addTo(map);
+    L.tileLayer(tileUrl, tileOptions).addTo(map);
   }, [tileMode]);
 
   // ─── RENDER CYCLONE TRACK, LIVE WIND SQUALLS & MARKERS ───

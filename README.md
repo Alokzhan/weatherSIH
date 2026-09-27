@@ -12,18 +12,30 @@ pinned: false
 ### **Automated 4D EPS Anomaly Tracking & 5km Physics-Informed Diffusion Downscaling System**
 *SIH Problem Statement SIH26078: Extreme Weather Anomaly Tracking and Hyperlocal Impact Downscaling*
 
-[![Live GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Live_Deployment-brightgreen?logo=github)](https://alokzhan.github.io/wheatherSIH/)
+[![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Live-brightgreen?logo=github)](https://alokzhan.github.io/wheatherSIH/)
+[![Vercel](https://img.shields.io/badge/Vercel-Deployed-black?logo=vercel)](https://weather-sih.vercel.app/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.2.1-EE4C2C?logo=pytorch)](https://pytorch.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
 [![React 19](https://img.shields.io/badge/React-19.0-61DAFB?logo=react)](https://react.dev/)
-[![Copernicus ERA5](https://img.shields.io/badge/Copernicus-ERA5_Ingestion-blue)](https://cds.climate.copernicus.eu/)
+[![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?logo=vite)](https://vite.dev/)
+[![Leaflet](https://img.shields.io/badge/Leaflet-GIS_Maps-199900?logo=leaflet)](https://leafletjs.com/)
+[![Mobile](https://img.shields.io/badge/Mobile-Responsive-blue?logo=android)](https://alokzhan.github.io/wheatherSIH/)
+
+---
+
+## 🚀 Live Deployments
+
+| Platform | URL | Status |
+|---|---|---|
+| **GitHub Pages** | https://alokzhan.github.io/wheatherSIH/ | ✅ Live |
+| **Vercel** | https://weather-sih.vercel.app/ | ✅ Live |
 
 ---
 
 ## 📌 1. Project Overview & Problem Statement
 
 ### ❌ The Problem in Existing NWP Forecasting
-In medium-range Numerical Weather Prediction (3 to 10 days), global $12\text{ km}$ Ensemble Prediction Systems (EPS)—such as NCMRWF NEPS-G, ECMWF EPS, and GSD—generate 50-member 4D forecasts. 
+In medium-range Numerical Weather Prediction (3 to 10 days), global $12\text{ km}$ Ensemble Prediction Systems (EPS)—such as NCMRWF NEPS-G, ECMWF EPS, and GSD—generate 50-member 4D forecasts.
 
 However, predicting localized extreme weather anomalies (cyclones, cloudbursts, intense convective rain cells, heat domes, and landslide surges) faces critical bottlenecks:
 1. **Spectral Smoothing & Peak Loss**: Standard spatial interpolation (Bicubic, Standard Bilinear, CNNs) averages out extreme weather peaks. A $200\text{ mm/h}$ localized cloudburst is smoothed down to $90\text{ mm/h}$, missing disaster thresholds.
@@ -49,24 +61,39 @@ However, predicting localized extreme weather anomalies (cyclones, cloudbursts, 
                            ▼
 ┌────────────────────────────────────────────────────────┐
 │  STAGE 2: PyTorch Conditional DDPM Diffusion Model     │
-│  • Generative Super-Resolution Downscaling (12km -> 5km)│
-│  • 5-Law Physics Constraints (Mass, Moisture, Energy) │
+│  • Generative Super-Resolution Downscaling (12km→5km)  │
+│  • 5-Law Physics Constraints (Mass, Moisture, Energy)  │
 │  • Zero Spectral Smoothing (99.9% Peak Preservation)   │
 └──────────────────────────┬─────────────────────────────┘
                            │
                            ▼
 ┌────────────────────────────────────────────────────────┐
-│  OPERATIONAL DISASTER UI & REAL-TIME DISPATCH         │
+│  OPERATIONAL DISASTER UI & REAL-TIME DISPATCH          │
 │  • 8 Active GIS Layers & Independent Eye Buttons       │
 │  • Windy Multi-Model Cyclone Tracker (IMD, ECMWF, GFS) │
 │  • StormTrace Copilot AI Weather Chatbot (Voice STT/TTS)│
-│  • Full Phone Responsiveness & "How It Works" Guide   │
+│  • Full Phone Responsiveness & "How It Works" Guide    │
 └──────────────────────────┘
 ```
 
 ---
 
-## 🗺️ 2. 8 Active GIS Map Layers & Independent Eye Buttons
+## 📱 2. Mobile-Responsive Design
+
+StormTrace AI is fully optimized for mobile/phone screens:
+
+| Feature | Mobile Behavior |
+|---|---|
+| **🔍 Search Bar** | Tap search icon → full-width expandable search row with quick city chips (Mumbai, Delhi, Wayanad, etc.) |
+| **🧭 Navigation** | Hamburger menu (≡) opens full side drawer |
+| **🌀 Cyclone Tracker** | Touch-friendly 44px controls, compacted timeline scrubber, right-padded buttons |
+| **🗺️ Live Risk Map** | Auto-toggle side panels, mobile-safe eye buttons, zero overlap layout |
+| **🤖 AI Chatbot** | Compact circular 44px pill on mobile, `z-40` layering to avoid card overlap |
+| **📡 Navbar Status** | Live API / Cached badge, region selector, theme toggle — all touch-friendly |
+
+---
+
+## 🗺️ 3. 8 Active GIS Map Layers & Independent Eye Buttons
 
 StormTrace AI features **8 fully functional, interactive GIS Map Layers** rendered on a Mapbox GL 3D Globe with independent popup controls and mobile responsiveness:
 
@@ -88,18 +115,25 @@ StormTrace AI features **8 fully functional, interactive GIS Map Layers** render
 
 ---
 
-## 🌀 3. Windy-Style Multi-Model Cyclone Tracker
+## 🌀 4. Windy-Style Multi-Model Cyclone Tracker
 
-The **Cyclone Tracker (`CycloneTracker.tsx`)** provides an interactive meteorologist workspace:
+The **Cyclone Tracker (`CycloneTracker.tsx`)** provides an interactive meteorologist workspace with **live data from Open-Meteo API**:
+
+- **🌐 Live Coastal Wind Data**: Real-time wind speeds, gusts, pressure & direction fetched from Open-Meteo for 8 monitored coastal zones (Bay of Bengal, Arabian Sea, Lakshadweep, Andaman).
 - **Multi-Model Overlays**: Real-time trajectory comparison between **IMD**, **UKMET**, **ECMWF**, **GFS**, and **StormTrace AI**.
-- **Landfall ETA & Threat Alert**: Calculates expected landfall target zone (e.g. Sagar Island / Bangladesh) with peak wind speeds (110-130 km/h) and storm surge height.
+- **Free Map Tiles Fallback**: Uses CartoDB Dark (dark mode), ESRI World Imagery (satellite), and OSM (street) when Mapbox token is not configured — map always renders.
+- **Landfall ETA & Threat Alert**: Calculates expected landfall target zone with peak wind speeds and storm surge height.
 - **Cone of Uncertainty**: Renders probabilistic polygon swaths based on model ensemble spreads.
 - **Timeline Scrubber**: Drag-and-play forecast scrubber with 1x, 2x, 4x speed controls.
 - **Language Mode**: Toggle between **Hinglish Mode** (*"Chinta ki Baat hai 😳?"*) and **English Mode**.
+- **3 Tracking Modes**:
+  - 🌀 **Live Cyclone Mode**: Rich trajectory + multi-model comparison + cone of uncertainty
+  - 🌬️ **Live Wind Squall Mode**: Real-time coastal wind monitoring (Open-Meteo API, 5-min refresh)
+  - 📁 **Historical Archive Mode**: Past cyclone event comparison
 
 ---
 
-## 🤖 4. Machine Learning Architecture & Model Breakdown
+## 🤖 5. Machine Learning Architecture & Model Breakdown
 
 StormTrace AI incorporates **5 specialized ML & Simulation engines** working in tandem:
 
@@ -135,7 +169,7 @@ StormTrace AI incorporates **5 specialized ML & Simulation engines** working in 
 
 ---
 
-## 💬 5. StormTrace AI Copilot Weather Chatbot
+## 💬 6. StormTrace AI Copilot Weather Chatbot
 
 StormTrace AI features an **intelligent Voice-Enabled Assistant (`WeatherChatbot.tsx`)** powered by FastAPI backend (`/api/v1/chatbot/query`) and live client-side fallback geocoding:
 
@@ -146,7 +180,7 @@ StormTrace AI features an **intelligent Voice-Enabled Assistant (`WeatherChatbot
 
 ---
 
-## 📐 6. System Architecture & Data Flow Diagrams (DFD)
+## 📐 7. System Architecture & Data Flow Diagrams (DFD)
 
 ### 🏗️ Complete System Architecture Diagram
 
@@ -172,7 +206,7 @@ StormTrace AI features an **intelligent Voice-Enabled Assistant (`WeatherChatbot
 +-----------------------------------------------------------------------------------+
 |                  3. STAGE 2: GENERATIVE DDPM DIFFUSION DOWNSCALING                |
 | +-------------------------+ +---------------------------+ +---------------------+ |
-| | PyTorch Conditional     | | 5-Law Physics Constraint  | | 12km -> 5km Spatial | |
+| | PyTorch Conditional     | | 5-Law Physics Constraint  | | 12km → 5km Spatial  | |
 | | DDPM UNet Downscaler    | | (Mass, Moisture, Energy)  | | Grid Reconstruction | |
 | +------------+------------+ +-------------+-------------+ +----------+----------+ |
 +--------------|----------------------------|--------------------------|------------+
@@ -263,7 +297,7 @@ flowchart LR
     User([Disaster Authorities / NDRF / Public User]) <-->|Voice/Text Query & Coordinates| StormTrace[StormTrace AI Core Engine]
     OpenMeteo[(Open-Meteo & ERA5 Live Data)] <-->|Real-time Weather & Reanalysis Fields| StormTrace
     Nominatim[(OpenStreetMap Nominatim Geocoder)] <-->|Live GIS Geocoding| StormTrace
-    Mapbox[(Mapbox Vector Tiles Service)] -->|High-Res 3D Globe & Dark Basemaps| StormTrace
+    Mapbox[(Mapbox / CartoDB / ESRI Tiles)] -->|High-Res 3D Globe & Dark Basemaps| StormTrace
     StormTrace -->|Windy Trajectories, 5km Downscaled Maps & Alerts| User
 ```
 
@@ -305,9 +339,9 @@ flowchart TD
 
 ---
 
-## 📊 7. Model Accuracy & Real Dataset Validation Results
+## 📊 8. Model Accuracy & Real Dataset Validation Results
 
-StormTrace models are trained and validated on authentic **Copernicus ERA5 Reanalysis** atmospheric feature tensors ($6^\circ\text{N}-38^\circ\text{N}, 68^\circ\text{E}-98^\circ\text{E}$). 
+StormTrace models are trained and validated on authentic **Copernicus ERA5 Reanalysis** atmospheric feature tensors ($6^\circ\text{N}-38^\circ\text{N}, 68^\circ\text{E}-98^\circ\text{E}$).
 
 ### 🎯 Empirical Model Training & Accuracy Metrics (Real ERA5 Dataset)
 
@@ -338,7 +372,7 @@ Evaluated on historical extreme weather events (**Cyclone Amphan**, **North Indi
 
 ---
 
-## 🌐 8. Copernicus ERA5 4-Stream Ingestion System
+## 🌐 9. Copernicus ERA5 4-Stream Ingestion System
 
 StormTrace AI ingests 4 official Copernicus / ECMWF ERA5 atmospheric datasets covering the Indian Subcontinent domain ($6^\circ\text{N}-38^\circ\text{N}, 68^\circ\text{E}-98^\circ\text{E}$):
 
@@ -354,7 +388,7 @@ python backend/data/download_copernicus_era5.py
 
 ---
 
-## 🧪 9. Model Weight Inspection & Verification
+## 🧪 10. Model Weight Inspection & Verification
 
 Train PyTorch AI Models on ERA5 datasets:
 ```bash
@@ -373,7 +407,7 @@ python backend/models/inspector.py
 
 ---
 
-## 🚀 10. Running & Deploying the Project
+## 🚀 11. Running & Deploying the Project
 
 ### 1. Frontend Setup (React 19 + Vite)
 ```bash
@@ -407,10 +441,31 @@ npm run build
 npm run deploy
 ```
 
+### 5. Environment Variables (Optional)
+| Variable | Description | Default |
+|---|---|---|
+| `VITE_MAPBOX_TOKEN` | Mapbox public token for premium map tiles | CartoDB/ESRI free tiles used as fallback |
+| `VITE_API_URL` | Backend API base URL | Auto-detected from localStorage |
+
 ---
 
-## 📄 11. License & Acknowledgements
+## 📱 12. Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | React 19, TypeScript, Vite 8.3 |
+| **Maps** | Leaflet.js, Mapbox GL, CartoDB tiles, ESRI tiles, OSM |
+| **Styling** | Vanilla CSS + TailwindCSS utility classes |
+| **Backend** | FastAPI 0.110, Uvicorn, SQLite |
+| **ML Models** | PyTorch 2.2.1, SciPy, NumPy |
+| **Live Data** | Open-Meteo API, RainViewer Radar, Copernicus ERA5 |
+| **Deployment** | GitHub Pages (`gh-pages`), Vercel (serverless Python) |
+| **CI/CD** | GitHub Actions (`JamesIves/github-pages-deploy-action@v4`) |
+
+---
+
+## 📄 13. License & Acknowledgements
 - Developed for **Smart India Hackathon (SIH26078)**.
 - Live Deployment: [https://alokzhan.github.io/wheatherSIH/](https://alokzhan.github.io/wheatherSIH/)
 - Data provided by **Copernicus Climate Data Store (CDS)** & **ECMWF Open Data**.
-- Map tiles provided by **RainViewer Radar Cache** and **OpenStreetMap**.
+- Map tiles provided by **RainViewer Radar Cache**, **CartoDB**, **ESRI World Imagery**, and **OpenStreetMap**.
