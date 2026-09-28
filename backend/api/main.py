@@ -29,25 +29,32 @@ if BACKEND_DIR not in sys.path:
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-try:
-    from stage1_gnn.efi_compute import compute_efi_1d
-    from stage1_gnn.gnn_model import run_gnn_inference
-    from stage2_diffusion.ddpm import run_diffusion_downscale
-    from stage2_diffusion.downscale_cnn import calculate_metrics
-    from stage2_diffusion.physics_loss import physics_informed_loss
-except Exception:
+if not os.getenv("VERCEL"):
     try:
-        from backend.stage1_gnn.efi_compute import compute_efi_1d
-        from backend.stage1_gnn.gnn_model import run_gnn_inference
-        from backend.stage2_diffusion.ddpm import run_diffusion_downscale
-        from backend.stage2_diffusion.downscale_cnn import calculate_metrics
-        from backend.stage2_diffusion.physics_loss import physics_informed_loss
+        from stage1_gnn.efi_compute import compute_efi_1d
+        from stage1_gnn.gnn_model import run_gnn_inference
+        from stage2_diffusion.ddpm import run_diffusion_downscale
+        from stage2_diffusion.downscale_cnn import calculate_metrics
+        from stage2_diffusion.physics_loss import physics_informed_loss
     except Exception:
-        compute_efi_1d = None
-        run_gnn_inference = None
-        run_diffusion_downscale = None
-        calculate_metrics = None
-        physics_informed_loss = None
+        try:
+            from backend.stage1_gnn.efi_compute import compute_efi_1d
+            from backend.stage1_gnn.gnn_model import run_gnn_inference
+            from backend.stage2_diffusion.ddpm import run_diffusion_downscale
+            from backend.stage2_diffusion.downscale_cnn import calculate_metrics
+            from backend.stage2_diffusion.physics_loss import physics_informed_loss
+        except Exception:
+            compute_efi_1d = None
+            run_gnn_inference = None
+            run_diffusion_downscale = None
+            calculate_metrics = None
+            physics_informed_loss = None
+else:
+    compute_efi_1d = None
+    run_gnn_inference = None
+    run_diffusion_downscale = None
+    calculate_metrics = None
+    physics_informed_loss = None
 
 
 import sqlite3
@@ -571,25 +578,31 @@ def get_location_risk(q: str = Query(..., description="Location name query")):
         }
     }
 
-try:
-    from data_pipeline import RealERA5DataPipeline, NWPDataPipeline
-    from stage1_gnn.efi_compute import compute_efi_1d, compute_multi_hazard_efi
-    from stage1_gnn.icosahedral_mesh import build_spherical_icosahedral_mesh
-    from stage1_gnn.gnn_model import run_gnn_inference, predict_anomaly_trajectory, train_gnn_model
-    from stage1_gnn.st_gnn_model import track_anomaly_object_st_gnn, train_st_gnn_model
-    from stage2_diffusion.ddpm import run_diffusion_downscale, train_ddpm_model
-    from stage2_diffusion.downscale_cnn import calculate_metrics
-    from stage2_diffusion.physics_loss import physics_informed_loss, compute_physics_loss_with_breakdown
-    from stage2_diffusion.evaluation_metrics import compute_quantitative_metrics
-    from ensemble_engine import EnsembleNWPEngine
-    from historical_validation import HistoricalValidationEngine
+if not os.getenv("VERCEL"):
+    try:
+        from data_pipeline import RealERA5DataPipeline, NWPDataPipeline
+        from stage1_gnn.efi_compute import compute_efi_1d, compute_multi_hazard_efi
+        from stage1_gnn.icosahedral_mesh import build_spherical_icosahedral_mesh
+        from stage1_gnn.gnn_model import run_gnn_inference, predict_anomaly_trajectory, train_gnn_model
+        from stage1_gnn.st_gnn_model import track_anomaly_object_st_gnn, train_st_gnn_model
+        from stage2_diffusion.ddpm import run_diffusion_downscale, train_ddpm_model
+        from stage2_diffusion.downscale_cnn import calculate_metrics
+        from stage2_diffusion.physics_loss import physics_informed_loss, compute_physics_loss_with_breakdown
+        from stage2_diffusion.evaluation_metrics import compute_quantitative_metrics
+        from ensemble_engine import EnsembleNWPEngine
+        from historical_validation import HistoricalValidationEngine
 
-    pipeline = RealERA5DataPipeline()
-    legacy_pipeline = NWPDataPipeline()
-    ensemble_engine = EnsembleNWPEngine(num_members=50)
-    historical_suite = HistoricalValidationEngine()
-except Exception as _ml_import_err:
-    print(f"Serverless ML import fallback: {_ml_import_err}")
+        pipeline = RealERA5DataPipeline()
+        legacy_pipeline = NWPDataPipeline()
+        ensemble_engine = EnsembleNWPEngine(num_members=50)
+        historical_suite = HistoricalValidationEngine()
+    except Exception as _ml_import_err:
+        print(f"Serverless ML import fallback: {_ml_import_err}")
+        pipeline = None
+        legacy_pipeline = None
+        ensemble_engine = None
+        historical_suite = None
+else:
     pipeline = None
     legacy_pipeline = None
     ensemble_engine = None
