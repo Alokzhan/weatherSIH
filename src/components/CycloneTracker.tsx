@@ -507,29 +507,37 @@ export const CycloneTracker: React.FC = () => {
     let tileOptions: L.TileLayerOptions;
 
     if (tileMode === 'satellite') {
-      // ESRI World Imagery + State/District Boundaries & Places overlay
-      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 18, attribution: '© Esri © OpenStreetMap contributors'
+      const satUrl = hasMapbox 
+        ? `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=${API_CONFIG.mapboxPublicToken}`
+        : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+      
+      L.tileLayer(satUrl, {
+        maxZoom: 19, attribution: hasMapbox ? '© Mapbox' : '© Esri'
       }).addTo(map);
-      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 18, zIndex: 50
-      }).addTo(map);
+
+      // Add labels over satellite
+      if (!hasMapbox) {
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+          maxZoom: 19, zIndex: 50
+        }).addTo(map);
+      }
     } else if (tileMode === 'street') {
       tileUrl = hasMapbox
-        ? `https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=${API_CONFIG.mapboxPublicToken}`
+        ? `https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/256/{z}/{x}/{y}?access_token=${API_CONFIG.mapboxPublicToken}`
         : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
       tileOptions = hasMapbox
-        ? { maxZoom: 18, tileSize: 512, zoomOffset: -1, attribution: '© Mapbox © OpenStreetMap' }
+        ? { maxZoom: 18, attribution: '© Mapbox © OpenStreetMap' }
         : { maxZoom: 18, attribution: '© OpenStreetMap contributors' };
       L.tileLayer(tileUrl, tileOptions).addTo(map);
     } else {
-      // Dark mode: Base + State/District/City Reference Labels Overlay
-      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 18, attribution: '© Esri © OpenStreetMap contributors'
-      }).addTo(map);
-      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 18, zIndex: 50
-      }).addTo(map);
+      // Dark mode
+      tileUrl = hasMapbox
+        ? `https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/256/{z}/{x}/{y}?access_token=${API_CONFIG.mapboxPublicToken}`
+        : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+      tileOptions = hasMapbox
+        ? { maxZoom: 20, attribution: '© Mapbox © OpenStreetMap' }
+        : { subdomains: 'abcd', maxZoom: 20, attribution: '© CARTO' };
+      L.tileLayer(tileUrl, tileOptions).addTo(map);
     }
   }, [tileMode]);
 

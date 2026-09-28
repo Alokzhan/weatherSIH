@@ -29,7 +29,7 @@ export const AdminPanel: React.FC = () => {
   const [savedSuccess, setSavedSuccess] = useState<boolean>(false);
 
   const [logs, setLogs] = useState<string[]>([
-    '[SYSTEM INIT] AstraWatch AI Admin Control Center Ready.',
+    '[SYSTEM INIT] StormTrace AI Admin Control Center Ready.',
     '[API KEYS] OpenWeatherMap Key Verified & Connected.',
     '[API KEYS] Tomorrow.io Weather Key Connected.',
     '[API KEYS] Mapbox Access Token Satellite Layer Active.',

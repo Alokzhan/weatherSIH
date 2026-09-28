@@ -75,7 +75,7 @@ export const AlertCenter: React.FC = () => {
       Tehsils: a.affectedTehsils.join('; '),
       Summary: a.summary,
     }));
-    exportToCSV(`AstraWatch_Alerts_${Date.now()}.csv`, csvRows);
+    exportToCSV(`StormTrace_Alerts_${Date.now()}.csv`, csvRows);
   };
 
   return (

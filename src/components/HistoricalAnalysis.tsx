@@ -67,19 +67,19 @@ export const HistoricalAnalysis: React.FC = () => {
   const [isLoadingBackend, setIsLoadingBackend] = useState<boolean>(true);
   const [backendValidationData, setBackendValidationData] = useState<any>(null);
 
-  useEffect(() => {
-    let isMounted = true;
-    async function loadValidation() {
-      setIsLoadingBackend(true);
-      const res = await fetchApiHistoricalValidation();
-      if (isMounted) {
-        setBackendValidationData(res);
-        setIsLoadingBackend(false);
+  const fetchBackendValidation = async () => {
+    setIsLoadingBackend(true);
+    try {
+      const data = await fetchApiHistoricalValidation();
+      if (data) {
+        setBackendValidationData(data);
       }
+    } catch (err) {
+      console.warn('Backend historical validation endpoint fallback:', err);
+    } finally {
+      setIsLoadingBackend(false);
     }
-    loadValidation();
-    return () => { isMounted = false; };
-  }, []);
+  };
 
   // Animation State
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -94,22 +94,6 @@ export const HistoricalAnalysis: React.FC = () => {
   ];
 
   const event: HistoricalEvent = CASE_STUDIES.find((e: HistoricalEvent) => e.id === selectedEventId) || CASE_STUDIES[0];
-
-  const fetchBackendValidation = async () => {
-    setIsLoadingBackend(true);
-    try {
-      const res = await fetch('/api/v1/model/historical-validation');
-      const contentType = res.headers.get('content-type');
-      if (res.ok && contentType && contentType.includes('application/json')) {
-        const data = await res.json();
-        setBackendValidationData(data);
-      }
-    } catch (err) {
-      console.warn('Backend historical validation endpoint fallback:', err);
-    } finally {
-      setIsLoadingBackend(false);
-    }
-  };
 
   useEffect(() => {
     fetchBackendValidation();

@@ -1,6 +1,6 @@
 # 📁 StormTrace AI - Data Directory Structure
 
-This directory organizes raw, processed, and historical event datasets for the StormTrace AI system (*SIH Problem Statement SIH26078*).
+This directory organizes raw, processed, and historical event datasets for the StormTrace AI system.
 
 ```
 data/

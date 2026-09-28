@@ -203,37 +203,26 @@ const PAN_INDIA_RAINFALL_FEATURES = [
 const FREE_DARK_STYLE: mapboxgl.Style = {
   version: 8,
   sources: {
-    'esri-dark': {
+    'carto-dark': {
       type: 'raster',
       tiles: [
-        'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+        'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+        'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+        'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+        'https://d.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'
       ],
       tileSize: 256,
-      attribution: '© Esri © OpenStreetMap contributors'
-    },
-    'esri-dark-ref': {
-      type: 'raster',
-      tiles: [
-        'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}'
-      ],
-      tileSize: 256,
-      attribution: '© Esri'
+      maxzoom: 20,
+      attribution: '© OpenStreetMap contributors © CARTO'
     }
   },
   layers: [
     {
-      id: 'esri-dark-base',
+      id: 'carto-dark-base',
       type: 'raster',
-      source: 'esri-dark',
+      source: 'carto-dark',
       minzoom: 0,
-      maxzoom: 18
-    },
-    {
-      id: 'esri-dark-ref-layer',
-      type: 'raster',
-      source: 'esri-dark-ref',
-      minzoom: 0,
-      maxzoom: 18
+      maxzoom: 20
     }
   ]
 };
@@ -247,6 +236,7 @@ const FREE_SATELLITE_STYLE: mapboxgl.Style = {
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
       ],
       tileSize: 256,
+      maxzoom: 18,
       attribution: '© Esri © OpenStreetMap contributors'
     },
     'esri-satellite-ref': {
@@ -255,6 +245,7 @@ const FREE_SATELLITE_STYLE: mapboxgl.Style = {
         'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
       ],
       tileSize: 256,
+      maxzoom: 18,
       attribution: '© Esri'
     }
   },
@@ -276,7 +267,13 @@ const FREE_SATELLITE_STYLE: mapboxgl.Style = {
   ]
 };
 
-function getMapStyleSpec(styleType: 'dark' | 'satellite'): mapboxgl.Style {
+function getMapStyleSpec(styleType: 'dark' | 'satellite'): string | mapboxgl.Style {
+  const token = API_CONFIG.mapboxPublicToken;
+  if (token && token.startsWith('pk.')) {
+    return styleType === 'dark' 
+      ? 'mapbox://styles/mapbox/dark-v11' 
+      : 'mapbox://styles/mapbox/satellite-streets-v12';
+  }
   return styleType === 'dark' ? FREE_DARK_STYLE : FREE_SATELLITE_STYLE;
 }
 

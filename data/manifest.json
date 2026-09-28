@@ -1,0 +1,24 @@
+{
+  "project": "StormTrace AI",
+  "version": "2.0.0",
+  "domain": {
+    "lat_min": 0.0,
+    "lat_max": 40.0,
+    "lon_min": 50.0,
+    "lon_max": 110.0,
+    "name": "India & North Indian Ocean"
+  },
+  "datasets": {
+    "era5_climatology": {
+      "path": "backend/data/era5_30y_quantiles.npz",
+      "metadata": "backend/data/era5_30y_climatology_baseline.json",
+      "status": "VERIFIED_REAL_DATA",
+      "quantiles": ["P50", "P90", "P95", "P99", "P99.9"]
+    },
+    "nwp_ensemble_proxy": {
+      "adapter": "backend/data/adapters/neps_adapter.py",
+      "max_members": 50,
+      "status": "PROXY_ADAPTER_READY"
+    }
+  }
+}

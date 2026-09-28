@@ -12,7 +12,9 @@ export default defineConfig(() => ({
         changeOrigin: true,
       },
     },
-
+    watch: {
+      ignored: ['**/backend/**', '**/data/**', '**/.venv/**', '**/__pycache__/**']
+    }
   },
   build: {
     // Mapbox GL JS is ~1.8MB — expected for a 3D map engine

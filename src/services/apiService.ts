@@ -440,7 +440,7 @@ export async function generateReportApi(locationName: string, format: 'json' | '
 }> {
   return {
     status: 'success',
-    reportUrl: `/exports/AstraWatch_RiskReport_${locationName.replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now()}.${format}`,
+    reportUrl: `/exports/StormTrace_RiskReport_${locationName.replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now()}.${format}`,
     generatedAt: new Date().toISOString(),
   };
 }

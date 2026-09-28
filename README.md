@@ -8,9 +8,7 @@ app_port: 7860
 pinned: false
 ---
 
-# 🌩️ StormTrace AI
-### **Automated 4D EPS Anomaly Tracking & 5km Physics-Informed Diffusion Downscaling System**
-*SIH Problem Statement SIH26078: Extreme Weather Anomaly Tracking and Hyperlocal Impact Downscaling*
+*Automated Extreme Weather Anomaly Tracking and Hyperlocal Impact Downscaling*
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Live-brightgreen?logo=github)](https://alokzhan.github.io/wheatherSIH/)
 [![Vercel](https://img.shields.io/badge/Vercel-Deployed-black?logo=vercel)](https://weather-sih.vercel.app/)

@@ -107,6 +107,19 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess, onNavigateTo
       return;
     }
 
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      setErrorMsg('Please enter a valid email address.');
+      return;
+    }
+
+    // Minimum password strength
+    if (password.trim().length < 6) {
+      setErrorMsg('Password must be at least 6 characters.');
+      return;
+    }
+
     setIsLoading(true);
     try {
       const res = await fetch('/api/v1/auth/login', {
@@ -165,6 +178,19 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess, onNavigateTo
 
     if (!fullName.trim() || !signupEmail.trim() || !signupPassword.trim()) {
       setErrorMsg('Please complete all required fields.');
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(signupEmail.trim())) {
+      setErrorMsg('Please enter a valid email address.');
+      return;
+    }
+
+    // Password strength validation
+    if (signupPassword.trim().length < 6) {
+      setErrorMsg('Password must be at least 6 characters.');
       return;
     }
 

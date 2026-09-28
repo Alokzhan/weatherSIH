@@ -81,7 +81,7 @@ export const ApiExplorer: React.FC = () => {
 
           <div className="flex items-center gap-2 font-mono text-xs text-cyan-400 bg-cyan-950/60 border border-cyan-800 px-3 py-1.5 rounded-xl">
             <Globe className="h-4 w-4 text-cyan-400" />
-            <span>Base URL: https://api.astrawatch.ai/v1</span>
+            <span>Base URL: https://api.stormtrace.ai/v1</span>
           </div>
         </div>
       </div>

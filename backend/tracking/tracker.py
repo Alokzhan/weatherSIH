@@ -28,7 +28,7 @@ class KalmanStormFilter:
         z = np.array([z_lat, z_lon])
         y = z - np.dot(self.H, self.x)
         S = np.dot(np.dot(self.H, self.P), self.H.T) + self.R
-        K = np.dot(np.dot(self.P, self.H.T), np.linalg.inv(S))
+        K = np.dot(np.dot(self.P, self.H.T), np.linalg.pinv(S))
         self.x = self.x + np.dot(K, y)
         self.P = np.dot((np.eye(4) - np.dot(K, self.H)), self.P)
         return self.x[:2]

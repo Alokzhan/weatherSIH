@@ -12,7 +12,6 @@ import {
   FileText, 
   Settings, 
   ChevronRight,
-  LogOut,
   ChevronLeft,
   Sprout,
   Radio,
@@ -184,22 +183,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isMob
 
       {/* Footer User Card */}
       <div className="p-2.5 border-t border-[#141d32]/80 bg-[#040710]">
-        <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} p-2 rounded-xl bg-[#0a0f1e] border border-[#141d32] text-xs`}>
-          <div className={`flex items-center gap-2.5 ${isCollapsed ? '' : ''}`}>
-            <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center font-bold text-white text-[10px] shrink-0 shadow-md shadow-blue-500/20">
-              AV
-            </div>
-            {!isCollapsed && (
-              <div className="overflow-hidden">
-                <span className="font-bold text-white block truncate w-28 text-[11px]">Alok Verma</span>
-                <span className="text-[10px] text-slate-500 block truncate">Disaster Officer</span>
-              </div>
-            )}
+        <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-2.5'} p-2 rounded-xl bg-[#0a0f1e] border border-[#141d32] text-xs`}>
+          <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center shrink-0 shadow-md shadow-blue-500/20">
+            <ShieldAlert className="h-4 w-4 text-white" />
           </div>
           {!isCollapsed && (
-            <button className="text-slate-600 hover:text-slate-300 p-1 transition-colors" title="Sign Out">
-              <LogOut className="h-4 w-4" />
-            </button>
+            <span className="text-[11px] text-slate-400 font-semibold truncate">Disaster Officer</span>
           )}
         </div>
       </div>

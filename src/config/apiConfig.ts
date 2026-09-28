@@ -1,6 +1,6 @@
-// AstraWatch AI Dynamic API Credentials Manager
-// Secrets are moved to backend/.env
-// Only public tokens (Mapbox) are exposed to Vite via VITE_ variables.
+// StormTrace AI Dynamic API Credentials Manager
+// Secrets are loaded from .env via Vite's import.meta.env
+// Only VITE_ prefixed variables are exposed to the frontend bundle.
 
 const getStoredBackendUrl = (): string => {
   if (typeof window !== 'undefined') {
@@ -11,7 +11,7 @@ const getStoredBackendUrl = (): string => {
 
 export const API_CONFIG = {
   mapboxPublicToken: import.meta.env.VITE_MAPBOX_TOKEN || '',
-  owmApiKey: import.meta.env.VITE_OWM_KEY || '8f993da72c69f972e707d5e1540fb9de',
+  owmApiKey: import.meta.env.VITE_OWM_KEY || '',
   apiUrl: import.meta.env.VITE_API_URL || getStoredBackendUrl() || '',
 };
 
