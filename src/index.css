@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ═══════════════════════════════════════════════════════════
    StormTrace AI — Premium Enterprise Design System v3.0
    Senior-Grade Design Tokens & Utility Classes
