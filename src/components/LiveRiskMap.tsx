@@ -406,8 +406,8 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
 
     map.on('load', () => {
       map.resize();
-      setTimeout(() => map.resize(), 200);
-      setTimeout(() => map.resize(), 800);
+      setTimeout(() => mapRef.current && mapRef.current.resize(), 200);
+      setTimeout(() => mapRef.current && mapRef.current.resize(), 800);
 
       try {
         map.setFog({
@@ -425,8 +425,7 @@ export const LiveRiskMap: React.FC<LiveRiskMapProps> = ({ selectedRegion = 'all'
       map.addSource('rain-radar-source', {
         type: 'raster',
         tiles: [
-          getOpenWeatherTileUrl('precipitation_new'),
-          'https://tilecache.rainviewer.com/v2/radar/nowcast_100m/{z}/{x}/{y}/2/1_1.png'
+          getOpenWeatherTileUrl('precipitation_new')
         ],
         tileSize: 256
       });

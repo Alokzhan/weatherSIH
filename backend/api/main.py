@@ -346,18 +346,18 @@ def proxy_owm_tile(layer: str, z: int, x: int, y: int):
     if OWM_KEY:
         url = f"https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={OWM_KEY}"
         try:
-            r = requests.get(url, headers=headers, stream=True, timeout=3)
+            r = requests.get(url, headers=headers, timeout=3)
             if r.status_code == 200:
-                return StreamingResponse(r.raw, media_type="image/png")
+                return Response(content=r.content, media_type="image/png")
         except Exception:
             pass
 
     # Fallback to RainViewer live precipitation Doppler radar
     radar_url = f"https://tilecache.rainviewer.com/v2/radar/nowcast_100m/{z}/{x}/{y}/2/1_1.png"
     try:
-        r = requests.get(radar_url, headers=headers, stream=True, timeout=3)
+        r = requests.get(radar_url, headers=headers, timeout=3)
         if r.status_code == 200:
-            return StreamingResponse(r.raw, media_type="image/png")
+            return Response(content=r.content, media_type="image/png")
     except Exception:
         pass
 
@@ -369,9 +369,9 @@ def proxy_radar_tile(z: int, x: int, y: int):
     headers = {'User-Agent': 'StormTrace-RadarProxy/2.0'}
     radar_url = f"https://tilecache.rainviewer.com/v2/radar/nowcast_100m/{z}/{x}/{y}/2/1_1.png"
     try:
-        r = requests.get(radar_url, headers=headers, stream=True, timeout=3)
+        r = requests.get(radar_url, headers=headers, timeout=3)
         if r.status_code == 200:
-            return StreamingResponse(r.raw, media_type="image/png")
+            return Response(content=r.content, media_type="image/png")
     except Exception:
         pass
     return Response(content=TRANSPARENT_PNG, media_type="image/png")
