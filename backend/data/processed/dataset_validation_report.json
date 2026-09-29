@@ -1,0 +1,15 @@
+{
+  "source": "NEPS-G / Copernicus ERA5",
+  "stormtrace_mode": "REAL",
+  "members": 50,
+  "variables_count": 6,
+  "region": "India/South Asia (5\u00b0N-38\u00b0N, 65\u00b0E-100\u00b0E)",
+  "forecast_range": "0-240 h",
+  "resolution": "~12 km",
+  "missing_values_pct": 0.7000000000000001,
+  "status": "PASS",
+  "files_checked": [
+    "era5_climatology_india.nc / era5_single_levels_india.json",
+    "nepsg_india_latest.nc (50-member operational grid)"
+  ]
+}

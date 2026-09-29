@@ -2,13 +2,4 @@ fastapi==0.110.0
 uvicorn==0.27.1
 python-dotenv==1.0.1
 requests==2.31.0
-numpy==1.26.4
-scipy==1.12.0
-pydantic==2.6.4
-# Actual AI & Data Science Libraries
-torch==2.2.1
-torchvision==0.17.1
-xarray==2024.2.0
-netCDF4==1.6.5
-cdsapi==0.6.1
-# diffusers==0.27.2
+pydantic==1.10.13
