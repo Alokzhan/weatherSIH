@@ -247,7 +247,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
                     <div className="p-4 text-center text-slate-500">No active alerts at this time.</div>
                   ) : (
                     alerts.map(alert => {
-                      const isCritical = alert.riskLevel === 'critical' || alert.riskLevel === 'extreme';
+                      const isCritical = alert.riskLevel === 'critical';
                       const isSevere = alert.riskLevel === 'severe';
                       const bgClass = isCritical 
                         ? "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900/30 hover:border-red-400 dark:hover:border-red-700 text-red-600 dark:text-red-400" 

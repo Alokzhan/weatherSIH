@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, Bell, Shield, Cloud, Smartphone, Moon, Sun, Globe } from 'lucide-react';
+import { Settings, Bell, Shield, Moon, Sun, Globe } from 'lucide-react';
 
 export const SettingsPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState('general');
