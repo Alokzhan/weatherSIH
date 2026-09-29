@@ -10,13 +10,18 @@ import {
   X,
   Menu,
   LogIn,
+  LogOut,
+  User,
+  ChevronDown,
   Wifi,
   WifiOff
 } from 'lucide-react';
 
+import type { AuthUser } from './AuthPage';
+
 import { INDIA_REGION_PRESETS } from '../data/mockData';
-import type { IndiaRegionId } from '../types/weather';
-import { subscribeBackendStatus, checkBackendHealth } from '../services/apiService';
+import type { IndiaRegionId, AlertItem } from '../types/weather';
+import { subscribeBackendStatus, checkBackendHealth, fetchApiAlerts } from '../services/apiService';
 
 interface TopNavbarProps {
   selectedRegion: IndiaRegionId;
@@ -43,10 +48,43 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
   const [searchFocused, setSearchFocused] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [isLive, setIsLive] = useState(false);
+  const [alerts, setAlerts] = useState<AlertItem[]>([]);
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const stored = localStorage.getItem('STORMTRACE_AUTH_USER');
+      if (stored) {
+        try {
+          setAuthUser(JSON.parse(stored));
+        } catch(e) {}
+      } else {
+        setAuthUser(null);
+      }
+    };
+    checkAuth();
+    window.addEventListener('auth-change', checkAuth);
+    return () => window.removeEventListener('auth-change', checkAuth);
+  }, []);
+
+  const handleSignOut = () => {
+    localStorage.removeItem('STORMTRACE_AUTH_USER');
+    window.dispatchEvent(new Event('auth-change'));
+    setShowUserDropdown(false);
+    if (onNavigateToTab) onNavigateToTab('dashboard');
+  };
 
   useEffect(() => {
     checkBackendHealth();
     const unsub = subscribeBackendStatus((status) => setIsLive(status));
+    
+    fetchApiAlerts().then(res => {
+      if (res.status === 'success') {
+        setAlerts(res.alerts.slice(0, 5));
+      }
+    });
+
     return unsub;
   }, []);
 
@@ -184,8 +222,12 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
               className="p-1.5 sm:p-2 min-h-[36px] min-w-[36px] sm:min-h-[38px] sm:min-w-[38px] flex items-center justify-center rounded-xl bg-slate-50 dark:bg-[#111827] border border-slate-200 dark:border-[#1e2d48] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1e2d48] relative transition-all"
             >
               <Bell className="h-4 w-4" />
-              <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
-              <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
+              {alerts.length > 0 && (
+                <>
+                  <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
+                  <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
+                </>
+              )}
             </button>
 
             {showAlertModal && (
@@ -193,40 +235,81 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
                 <div className="flex justify-between items-center border-b border-slate-100 dark:border-[#1e2d48] pb-2">
                   <span className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
                     <AlertTriangle className="h-4 w-4 text-red-500" />
-                    Active Severe Alerts (4)
+                    Active Severe Alerts ({alerts.length})
                   </span>
                   <button onClick={() => setShowAlertModal(false)}>
                     <X className="h-3.5 w-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" />
                   </button>
                 </div>
 
-                <div className="space-y-2">
-                  <div className="p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/30 space-y-1 cursor-pointer hover:border-red-400 dark:hover:border-red-700 transition-colors">
-                    <span className="font-bold text-red-600 dark:text-red-400 block">Severe Thunderstorm Alert</span>
-                    <span className="text-[10px] text-slate-500 block">Prayagraj / Phulpur • 29m ago</span>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-900/30 space-y-1 cursor-pointer hover:border-orange-400 dark:hover:border-orange-700 transition-colors">
-                    <span className="font-bold text-orange-600 dark:text-orange-400 block">Heavy Rainfall Warning</span>
-                    <span className="text-[10px] text-slate-500 block">Mumbai Suburban • 1h ago</span>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/30 space-y-1 cursor-pointer hover:border-amber-400 dark:hover:border-amber-700 transition-colors">
-                    <span className="font-bold text-amber-600 dark:text-amber-400 block">Flash Flood Risk</span>
-                    <span className="text-[10px] text-slate-500 block">Wayanad / Western Ghats • 2h ago</span>
-                  </div>
+                <div className="space-y-2 max-h-[400px] overflow-y-auto pr-1">
+                  {alerts.length === 0 ? (
+                    <div className="p-4 text-center text-slate-500">No active alerts at this time.</div>
+                  ) : (
+                    alerts.map(alert => {
+                      const isCritical = alert.riskLevel === 'critical' || alert.riskLevel === 'extreme';
+                      const isSevere = alert.riskLevel === 'severe';
+                      const bgClass = isCritical 
+                        ? "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900/30 hover:border-red-400 dark:hover:border-red-700 text-red-600 dark:text-red-400" 
+                        : isSevere
+                        ? "bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-900/30 hover:border-orange-400 dark:hover:border-orange-700 text-orange-600 dark:text-orange-400"
+                        : "bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900/30 hover:border-amber-400 dark:hover:border-amber-700 text-amber-600 dark:text-amber-400";
+                      
+                      const timeStr = alert.issuedAt ? new Date(alert.issuedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Just now';
+                      
+                      return (
+                        <div key={alert.id} className={`p-2.5 rounded-xl border space-y-1 cursor-pointer transition-colors ${bgClass}`} onClick={() => { setShowAlertModal(false); if (onNavigateToTab) onNavigateToTab('alerts'); }}>
+                          <span className="font-bold block">{alert.title}</span>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400 block">{alert.district} • {timeStr}</span>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               </div>
             )}
           </div>
 
           {/* Login / Auth Page Button */}
-          <button
-            onClick={() => onNavigateToTab && onNavigateToTab('auth')}
-            className="px-2 sm:px-2.5 py-1.5 min-h-[36px] sm:min-h-[38px] rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-blue-600/20"
-            title="Sign In or Register Account"
-          >
-            <LogIn className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Sign In</span>
-          </button>
+          {authUser ? (
+            <div className="relative">
+              <button
+                onClick={() => setShowUserDropdown(!showUserDropdown)}
+                className="px-2 sm:px-3 py-1.5 min-h-[36px] sm:min-h-[38px] rounded-xl bg-slate-50 dark:bg-[#111827] border border-slate-200 dark:border-[#1e2d48] text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-2 transition-all hover:bg-slate-100 dark:hover:bg-[#1e2d48]"
+              >
+                <div className="h-6 w-6 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 overflow-hidden shrink-0">
+                  {authUser.avatar ? <img src={authUser.avatar} alt="Avatar" className="h-full w-full object-cover" /> : <User className="h-3.5 w-3.5" />}
+                </div>
+                <span className="hidden sm:inline max-w-[100px] truncate">{authUser.name}</span>
+                <ChevronDown className="h-3 w-3 text-slate-400" />
+              </button>
+
+              {showUserDropdown && (
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#0f1628] border border-slate-200 dark:border-[#1a2540] rounded-2xl shadow-xl p-2 z-50">
+                  <div className="px-3 py-2 border-b border-slate-100 dark:border-[#1a2540] mb-1">
+                    <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{authUser.name}</p>
+                    <p className="text-[10px] text-slate-500 truncate">{authUser.role}</p>
+                  </div>
+                  <button 
+                    onClick={handleSignOut}
+                    className="w-full text-left px-3 py-2 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl flex items-center gap-2 transition-colors"
+                  >
+                    <LogOut className="h-3.5 w-3.5" />
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => onNavigateToTab && onNavigateToTab('auth')}
+              className="px-2 sm:px-2.5 py-1.5 min-h-[36px] sm:min-h-[38px] rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-blue-600/20"
+              title="Sign In or Register Account"
+            >
+              <LogIn className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Sign In</span>
+            </button>
+          )}
         </div>
       </header>
 

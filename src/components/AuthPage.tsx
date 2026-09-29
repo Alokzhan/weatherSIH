@@ -31,6 +31,24 @@ interface AuthPageProps {
   onNavigateToTab?: (tab: string) => void;
 }
 
+const getTargetTab = (user: AuthUser) => {
+  const role = (user.role || '').toLowerCase();
+  const org = (user.organization || '').toLowerCase();
+  if (role.includes('farmer') || org.includes('krishi') || org.includes('farmer')) return 'farmer';
+  if (role.includes('officer') || role.includes('ndrf') || org.includes('ndrf') || org.includes('disaster')) return 'disaster';
+  return 'dashboard';
+};
+
+const getRoleFromOrganization = (org: string) => {
+  const orgLower = (org || '').toLowerCase();
+  if (orgLower.includes('farmer') || orgLower.includes('krishi')) return 'Farmer Representative';
+  if (orgLower.includes('ndrf')) return 'NDRF Operations Officer';
+  if (orgLower.includes('public') || orgLower.includes('citizen')) return 'Citizen Observer';
+  if (orgLower.includes('sdma')) return 'Disaster Management Officer';
+  if (orgLower.includes('imd')) return 'Meteorologist';
+  return 'Registered Specialist';
+};
+
 export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess, onNavigateToTab }) => {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [showPassword, setShowPassword] = useState(false);
@@ -64,7 +82,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess, onNavigateTo
           email: 'rajesh.sharma@ndrf.gov.in',
           role: 'NDRF Disaster Operations Chief',
           organization: 'NDRF 9th Battalion (Supaul & Kosi Basin)',
-          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+          avatar: `https://unavatar.io/rajesh.sharma@ndrf.gov.in?fallback=https://ui-avatars.com/api/?name=Cmdt.+Rajesh+Sharma`,
         };
       } else if (role === 'farmer') {
         user = {
@@ -73,7 +91,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess, onNavigateTo
           email: 'gurdeep.krishi@agri.in',
           role: 'Progressive Farmer Representative',
           organization: 'Kisan Samiti & Crop Protection Cell',
-          avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
+          avatar: `https://unavatar.io/gurdeep.krishi@agri.in?fallback=https://ui-avatars.com/api/?name=Sardar+Gurdeep+Singh`,
         };
       } else {
         user = {
@@ -82,18 +100,19 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess, onNavigateTo
           email: 'ananya.roy@meteorology.org',
           role: 'Climate Researcher',
           organization: 'Indian Institute of Tropical Meteorology',
-          avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+          avatar: `https://unavatar.io/ananya.roy@meteorology.org?fallback=https://ui-avatars.com/api/?name=Ananya+Roy`,
         };
       }
 
       if (typeof window !== 'undefined') {
         localStorage.setItem('STORMTRACE_AUTH_USER', JSON.stringify(user));
+        window.dispatchEvent(new Event('auth-change'));
       }
 
       setIsLoading(false);
       setSuccessMsg(`Welcome, ${user.name}! Access Granted.`);
       if (onLoginSuccess) onLoginSuccess(user);
-      if (onNavigateToTab) onNavigateToTab('dashboard');
+      if (onNavigateToTab) onNavigateToTab(getTargetTab(user));
     }, 600);
   };
 
@@ -135,15 +154,16 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess, onNavigateTo
           email: data.user.email,
           role: data.user.role,
           organization: data.user.organization,
-          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
+          avatar: `https://unavatar.io/${data.user.email}?fallback=https://ui-avatars.com/api/?name=${encodeURIComponent(data.user.name)}`,
         };
         if (typeof window !== 'undefined') {
           localStorage.setItem('STORMTRACE_AUTH_USER', JSON.stringify(user));
+          window.dispatchEvent(new Event('auth-change'));
         }
         setIsLoading(false);
         setSuccessMsg(`Welcome, ${user.name}! (Authenticated via SQLite DB)`);
         if (onLoginSuccess) onLoginSuccess(user);
-        if (onNavigateToTab) onNavigateToTab('dashboard');
+        if (onNavigateToTab) onNavigateToTab(getTargetTab(user));
         return;
       } else {
         setErrorMsg(data.message || 'Invalid login credentials.');
@@ -157,15 +177,16 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess, onNavigateTo
         email: email,
         role: 'Authorized Disaster Officer',
         organization: 'State Disaster Management Authority (SDMA)',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
+        avatar: `https://unavatar.io/${email}?fallback=https://ui-avatars.com/api/?name=${encodeURIComponent(email.split('@')[0])}`,
       };
       if (typeof window !== 'undefined') {
         localStorage.setItem('STORMTRACE_AUTH_USER', JSON.stringify(user));
+        window.dispatchEvent(new Event('auth-change'));
       }
       setIsLoading(false);
       setSuccessMsg('Authentication Successful!');
       if (onLoginSuccess) onLoginSuccess(user);
-      if (onNavigateToTab) onNavigateToTab('dashboard');
+      if (onNavigateToTab) onNavigateToTab(getTargetTab(user));
       return;
     }
     setIsLoading(false);
@@ -222,17 +243,18 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess, onNavigateTo
           id: data.user.id,
           name: data.user.name,
           email: data.user.email,
-          role: data.user.role,
+          role: data.user.role || getRoleFromOrganization(data.user.organization),
           organization: data.user.organization,
-          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+          avatar: `https://unavatar.io/${data.user.email}?fallback=https://ui-avatars.com/api/?name=${encodeURIComponent(data.user.name)}`,
         };
         if (typeof window !== 'undefined') {
           localStorage.setItem('STORMTRACE_AUTH_USER', JSON.stringify(newUser));
+          window.dispatchEvent(new Event('auth-change'));
         }
         setIsLoading(false);
         setSuccessMsg(`Account created in SQLite DB! Welcome, ${newUser.name}.`);
         if (onLoginSuccess) onLoginSuccess(newUser);
-        if (onNavigateToTab) onNavigateToTab('dashboard');
+        if (onNavigateToTab) onNavigateToTab(getTargetTab(newUser));
         return;
       } else {
         setErrorMsg(data.message || 'Registration failed.');
@@ -243,17 +265,18 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess, onNavigateTo
         id: `USR-${Date.now().toString().slice(-4)}`,
         name: fullName,
         email: signupEmail,
-        role: 'Registered Specialist',
+        role: getRoleFromOrganization(organization),
         organization: organization,
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+        avatar: `https://unavatar.io/${signupEmail}?fallback=https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}`,
       };
       if (typeof window !== 'undefined') {
         localStorage.setItem('STORMTRACE_AUTH_USER', JSON.stringify(newUser));
+        window.dispatchEvent(new Event('auth-change'));
       }
       setIsLoading(false);
       setSuccessMsg('Account Created Successfully!');
       if (onLoginSuccess) onLoginSuccess(newUser);
-      if (onNavigateToTab) onNavigateToTab('dashboard');
+      if (onNavigateToTab) onNavigateToTab(getTargetTab(newUser));
       return;
     }
     setIsLoading(false);
@@ -582,12 +605,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess, onNavigateTo
                         onChange={(e) => setOrganization(e.target.value)}
                         className="w-full bg-[#111827] border border-[#1e2d48] rounded-xl pl-10 pr-4 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500 transition-all cursor-pointer"
                       >
+                        <option value="General Public / Citizen (Personal Account)">General Public / Citizen (Personal Account)</option>
                         <option value="NDRF Disaster Response">NDRF Battalion Command</option>
                         <option value="State Disaster Authority (SDMA)">State Disaster Management Authority (SDMA)</option>
                         <option value="IMD Meteorologist Cell">India Meteorological Department (IMD)</option>
                         <option value="Krishi Vigyan Kendra (Farmer Cell)">Farmer Cooperative / KVK Cell</option>
                         <option value="Academic Climate Research">University / Climate Research Institute</option>
-                        <option value="General Public Observer">General Public Observer</option>
                       </select>
                     </div>
                   </div>

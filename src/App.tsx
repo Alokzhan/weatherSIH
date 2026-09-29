@@ -23,6 +23,7 @@ const AdminPanel = lazy(() => import('./components/AdminPanel').then(m => ({ def
 const ApiExplorer = lazy(() => import('./components/ApiExplorer').then(m => ({ default: m.ApiExplorer })));
 const HowItWorks = lazy(() => import('./components/HowItWorks').then(m => ({ default: m.HowItWorks })));
 const AuthPage = lazy(() => import('./components/AuthPage').then(m => ({ default: m.AuthPage })));
+const SettingsPanel = lazy(() => import('./components/SettingsPanel').then(m => ({ default: m.SettingsPanel })));
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -194,9 +195,10 @@ export function App() {
       case 'disaster-dashboard':
         return <DisasterDashboard />;
       case 'admin':
-      case 'settings':
       case 'data-center':
         return <AdminPanel />;
+      case 'settings':
+        return <SettingsPanel />;
       case 'api':
       case 'apis':
       case 'weather-apis':
